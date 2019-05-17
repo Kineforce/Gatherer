@@ -65,17 +65,11 @@ void menu(){
 	switch(escolha_Menu)
 	{
 		case 1:
-
 		cadastra_Estado();
-
 		break;
-
 		case 9:
-
 		lista_Estados();
-
 		break;
-
 		case 8:
 
 		system("cls");
