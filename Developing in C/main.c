@@ -1,47 +1,53 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <conio.h>
 #include <locale.h>
-#define TAM_ESTADO 27
-#define TAM_CIDADE 6000
+#include <string.h>
 
-// strncmp para verificar se já tem o nome no vetor cidade ou estado
+// Funções globais
 
-// Definindo funções para chamadas globais
-void menu();
+void cabecalho();
 void cadastra_Estado();
-void lista_Estados();
+void listar();
 void cadastra_Cidade();
-void lista_Cidades();
+void cadastra_Cid(char n_estado[]);
+void cadastra_Pessoa();
+int compara_estcid_Cadastra(char estcid[]);
+void lista_cidade();
+void lista_pessoas();
+void pesquisa_Pessoa();
+void lista_pessoas_cidade();
+void lista_pessoas_estado();
 
 
 
-// Estruturas do programa
+// Estruturas
 
-struct Cidade
-{
-    char nome_Cidade[30];
+typedef struct pessoa PESSOA;
+struct pessoa{
+	char nome_Pessoa[30];
+	char sexo_Pessoa[2];
+	char cidade_Pessoa[30];
+	char estado_Pessoa[30];
+	int dia;
+	int mes;
+	int ano;
+	
 };
 
-struct Estado
-{
-	char nome_Estado[30];
-	char sigla_Estado[5];
+typedef struct cidade CIDADE;
+struct cidade{
+	char nome_Cidade[30];
 };
 
-struct Estado estados[TAM_ESTADO];
-struct Cidade cidade[TAM_CIDADE];
+typedef struct estado ESTADO;
+struct estado{
+	char nome_Estado[200];
+	CIDADE ref_Cidade;
+};
 
-//Função Principal
-
-int main() {
-	menu();
-	return 0;
-}
-
-//Funções e procedimentos
-
-void menu(){
-	char enter;
+int main(){
+	
 	int escolha_Menu;
 
 	system("cls");
@@ -51,8 +57,7 @@ void menu(){
 	printf("\n-----------------------------------------------------------------------");
 	printf("\n-----------------------------------------------------------------------");
 	printf("\n----Pressione enter para continuar...\n");
-	scanf("%c",&enter);
-
+	getchar();
 	system("cls");
 
 	printf("-----------------------------------------------------------------------");
@@ -68,8 +73,6 @@ void menu(){
 	printf("\n---- 6 - Consultar pessoa por Nome ------------------------------------");
 	printf("\n---- 7 - Gerar relatorio demografico ----------------------------------");
 	printf("\n---- 8 - Finalizar Programa -------------------------------------------");
-	printf("\n---- 9 - Listar Estados -----------------------------------------------");
-	printf("\n---- 10- Listar Cidades -----------------------------------------------");
 	printf("\n-----------------------------------------------------------------------\n");
 
 	scanf("%d",&escolha_Menu);
@@ -77,204 +80,338 @@ void menu(){
 	switch(escolha_Menu)
 	{
 		case 1:
-            cadastra_Estado();
+			cadastra_Estado();
 		break;
+		
 		case 2:
-            cadastra_Cidade();
+			cadastra_Cidade();
         break;
-		case 9:
-            lista_Estados();
+		
+		case 3:
+			cadastra_Pessoa();
 		break;
+		
+		case 4:
+			//lista_pessoas_Estado();
+		break;
+		
+		case 5:
+			//lista_pessoas_Cidade();
+		break;
+
+		case 6:
+			pesquisa_Pessoa();
+		break;
+
+		case 7:
+			//relatorio_Demografico
+		break;  
+		
 		case 10:
-            lista_Cidades();
-        break;
-		case 8:
-
-		system("cls");
-		printf("-----------------------------------------------------------------------");
-		printf("\n-----------------------------------------------------------------------");
-		printf("\n--------------P R O G R A M A  F I N A L I Z A D O --------------------");
-		printf("\n-----------------------------------------------------------------------");
-		printf("\n-----------------------------------------------------------------------\n\n");
-
-		exit(0);
+		lista_cidade();
 		break;
+		
+		case 11:
+		lista_pessoas();
+		break;
+ 
+		case 8:
+			system("cls");
+			printf("-----------------------------------------------------------------------");
+			printf("\n-----------------------------------------------------------------------");
+			printf("\n--------------P R O G R A M A  F I N A L I Z A D O --------------------");
+			printf("\n-----------------------------------------------------------------------");
+			printf("\n-----------------------------------------------------------------------\n\n");
+			exit(0);
+		break;
+		
 		default:
-            system("cls");
+			system("cls");
+			printf("-----------------------------------------------------------------------");
+			printf("\n-----------------------------------------------------------------------");
+			printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
+			printf("\n-----------------------------------------------------------------------");
+			printf("\n-----------------------------------------------------------------------\n\n");
+			printf("\n----Opcao Invalida! Para retornar ao menu, pressionte Enter...");
+			getchar();
+			main();
+        break;
+	}
+}
+
+void cabecalho(){
+	
+		system("cls");
         printf("-----------------------------------------------------------------------");
         printf("\n-----------------------------------------------------------------------");
         printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
         printf("\n-----------------------------------------------------------------------");
         printf("\n-----------------------------------------------------------------------\n\n");
-        printf("\n----Opcao Invalida! Para retornar ao menu, pressionte Enter...");
-        scanf("%c", &enter);
-        menu();
-        break;
-
-	}
-
-	system("cls");
-
-
 }
 
 void cadastra_Estado(){
-
-	FILE *file;
-	file = fopen("database.txt", "a");
-
-	char escolha;
-	int i = 1;
-	int g = 0;
-
-
-	while(i != 0){
-
-		g++;
-
-		system("cls");
-		printf("-----------------------------------------------------------------------");
-		printf("\n-----------------------------------------------------------------------");
-		printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
-		printf("\n-----------------------------------------------------------------------");
-		printf("\n-----------------------------------------------------------------------\n");
-
-		fflush(stdin);
-		printf("\nDigite o nome de um estado para cadastrar: ");
-		fgets(estados[g].nome_Estado,30,stdin);
-		printf("\nDigite o nome da sigla deste estado: ");
-		fgets(estados[g].sigla_Estado,5,stdin);
-		fputs(estados[g].nome_Estado, file);
-		fputs(estados[g].sigla_Estado,file);
-		fclose(file);
-
-		printf("\nDeseja cadastrar novamente? S/n\n");
-		scanf("%c",&escolha);
-
-
-		if(escolha == 'n' || escolha == 'N'){
-
-
-		menu();
- 		}
-
-		cadastra_Estado();
+	
+	
+	FILE *arquivo;
+	ESTADO est;
+	
+	arquivo = fopen("database.txt","a");
+	
+	if(arquivo == NULL){
+		cabecalho();
+		printf("Erro ao abrir o arquivo!\n");
+		main();
+	}else{
+		do{
+			cabecalho();
+			fflush(stdin);
+			printf("Digite o nome do estado: ");
+			gets(est.nome_Estado);
+			fflush(stdin);
+			fwrite(&est, sizeof(ESTADO), 1, arquivo);
+			printf("Continuar cadastrando? S/n\n");
+		}while(getchar() == 's');
+		fclose(arquivo);
+		main();
 	}
-
-
-}
-
-void lista_Estados(){
-
-	FILE *file;
-	file = fopen("database.txt", "r");
-
-	 if (file == NULL){
-	system("cls");
-	printf("-----------------------------------------------------------------------");
-	printf("\n-----------------------------------------------------------------------");
-	printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
-	printf("\n-----------------------------------------------------------------------");
-	printf("\n-----------------------------------------------------------------------\n\n");
-	printf("Problemas na abertura do arquivo\n");
-	system("pause");
-	menu();
-	}
-
-	char estados[100];
-
-	system("cls");
-	printf("-----------------------------------------------------------------------");
-	printf("\n-----------------------------------------------------------------------");
-	printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
-	printf("\n-----------------------------------------------------------------------");
-	printf("\n-----------------------------------------------------------------------\n\n");
-	while(fgets(estados, 100, file) != NULL){
-		printf("- %s", estados);
-		}
-		system("pause");
-		menu();
-
-		fclose(file);
-
 }
 
 void cadastra_Cidade(){
-
-        FILE  *file;
-        file = fopen("database_Cidade.txt", "a");
-
-        int g = 0;
-        int i = 1;
-        char escolha;
-
-	while(i != 0){
-
-		g++;
-
-		system("cls");
-		printf("-----------------------------------------------------------------------");
-		printf("\n-----------------------------------------------------------------------");
-		printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
-		printf("\n-----------------------------------------------------------------------");
-		printf("\n-----------------------------------------------------------------------\n");
-
-		fflush(stdin);
-		printf("\nDigite o nome de uma cidade para cadastrar: ");
-		fgets(cidade[g].nome_Cidade,TAM_CIDADE,stdin);
-
-		fputs(cidade[g].nome_Cidade, file);
-
-		fclose(file);
-
-		printf("\nDeseja cadastrar novamente? S/n\n");
-		scanf("%c",&escolha);
-
-
-		if(escolha == 'n' || escolha == 'N'){
-
-
-		menu();
- 		}
-
+	FILE *arquivo;
+	ESTADO est;
+	
+	arquivo = fopen("database.txt","r");
+	
+	char nome[30];
+	
+	if(arquivo == NULL){
+		printf("Erro ao abrir o arquivo!\n");
+		main();
+	}else{
+		
+			cabecalho();
+			fflush(stdin);
+			printf("Digite o nome do estado da cidade: ");
+			gets(nome);
+			while( fread(&est, sizeof(ESTADO), 1, arquivo)==1){
+				if(strcmp(nome, est.nome_Estado) == 0){
+					cadastra_Cid(nome);
+				}
+			}
+			printf("Deseja continuar cadastrando? S ou N ");
+		if(getchar() == 's'){
 		cadastra_Cidade();
-	}
-
-}
-
-void lista_Cidades(){
-
-	FILE *file;
-	file = fopen("database_Cidade.txt", "r");
-
-	 if (file == NULL){
-	system("cls");
-	printf("-----------------------------------------------------------------------");
-	printf("\n-----------------------------------------------------------------------");
-	printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
-	printf("\n-----------------------------------------------------------------------");
-	printf("\n-----------------------------------------------------------------------\n\n");
-	printf("Problemas na abertura do arquivo\n");
-	system("pause");
-	menu();
-	}
-
-	char cidades[100];
-
-	system("cls");
-	printf("-----------------------------------------------------------------------");
-	printf("\n-----------------------------------------------------------------------");
-	printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
-	printf("\n-----------------------------------------------------------------------");
-	printf("\n-----------------------------------------------------------------------\n\n");
-	while(fgets(cidades, 100, file) != NULL){
-		printf("- %s", cidades);
 		}
+		fclose(arquivo);
+		main();
+	}
+}
+
+void cadastra_Cid(char n_estado[]){
+	
+	
+	FILE *arquivo;
+	ESTADO est;
+	
+	char n_Estado[300];
+	char n_Cidade[100];
+	
+	arquivo = fopen("cidade.txt","a");
+	
+	if(arquivo == NULL){
+		printf("Erro ao abrir o arquivo!\n");
+		main();
+	}else{
+		cabecalho();
+		printf("Estado detectado com sucesso!\n");
+		fflush(stdin);
+		strcpy(n_Estado,n_estado);
+		printf("Agora, digite o nome da cidade: ");	
+		fgets(n_Cidade,100,stdin);
+		strcat(n_Estado, n_Cidade);
+		printf("%s",n_Estado);
+		strcpy(est.nome_Estado, n_Estado);
+		fwrite(&est, sizeof(ESTADO), 1, arquivo);
+	}
+	fclose(arquivo);
+	
+	
+}
+
+void cadastra_Pessoa(){
+	
+	
+	FILE *arquivo;
+	PESSOA pes;
+	arquivo = fopen("pessoas.txt","a");
+	
+	char city[100];
+	char estate[100];
+	char estateorigin[100];
+	
+if(arquivo == NULL){
+		cabecalho();
+		printf("Erro ao abrir o arquivo!\n");
+		main();
+	}else{
+		cabecalho();
+		fflush(stdin);
+		printf("Digite o nome do estado da pessoa: ");
+		gets(estateorigin);
+		strcpy(estate,estateorigin);
+		printf("Digite o nome da cidade da pessoa: ");
+		fgets(city,100,stdin);
+		strcat(estate,city);
+		if(compara_estcid_Cadastra(estate) == 1){
+			cabecalho();
+			fflush(stdin);
+			strcpy(pes.estado_Pessoa,estateorigin);
+			strcpy(pes.cidade_Pessoa,city);
+			printf("Digite o nome da pessoa: ");
+			gets(pes.nome_Pessoa);
+			printf("Digite o sexo da pessoa: M/F ");
+			gets(pes.sexo_Pessoa);
+			printf("Digite a data de nascimento da pessoa: \n");
+			printf("Digite o dia: \n");
+			scanf("%d",&pes.dia);
+			printf("Digite o mes: \n");
+			scanf("%d",&pes.mes);
+			printf("Digite o ano: \n");
+			scanf("%d",&pes.ano);
+			fwrite(&pes, sizeof(PESSOA), 1, arquivo);
+		}
+			printf("Deseja cadastrar novamente? S ou N\n");
+		if(getchar() == 's'){
+			cadastra_Pessoa();
+		}
+		fclose(arquivo);
+		main();
+		
+	}
+}
+
+int compara_estcid_Cadastra(char estcid[]){
+	FILE *arquivo;
+	ESTADO est;
+	
+	int val;
+	arquivo = fopen("cidade.txt","r");
+		
+		
+	if(arquivo == NULL){
+		printf("Erro ao abrir o arquivo!\n");
+		main();
+	}else{
+		cabecalho();
+		fflush(stdin);
+		while(fread(&est, sizeof(ESTADO), 1, arquivo) == 1){
+			if(strcmp(estcid,est.nome_Estado) == 0){
+				val = 1;
+				fclose(arquivo);
+			}
+		}
+	}
+
+return val;
+}
+
+void lista_cidade(){
+	FILE *arquivo;
+	ESTADO est;
+	arquivo = fopen("cidade.txt","r");
+	
+	cabecalho();
+	if(arquivo == NULL){
+		printf("Erro ao abrir o arquivo!\n");
 		system("pause");
-		menu();
+		main();
+	}else{
+		while(fread(&est, sizeof(ESTADO), 1, arquivo)){
+			printf("Estado e cidade: %s",est.nome_Estado);
+			printf("----------------------------------------------------------------\n\n");
+		}
+	}
+		system("pause");
+		fclose(arquivo);
+		main();
+}
 
-		fclose(file);
+void lista_pessoas(){
+	FILE *arquivo;
+	PESSOA pes;
+	arquivo = fopen("pessoas.txt","r");
+	
+	cabecalho();
+	if(arquivo == NULL){
+		printf("Erro ao abrir o arquivo!\n");
+		system("pause");
+		main();
+	}else{
+		while(fread(&pes, sizeof(PESSOA), 1, arquivo)){
+			printf("Nome: %s\n",pes.nome_Pessoa);
+			printf("Sexo: %s\n",pes.sexo_Pessoa);
+			printf("Data de nascimento: %d/%d/%d\n",pes.dia,pes.mes,pes.ano);
+			printf("Estado: %s\n",pes.estado_Pessoa);
+			printf("Cidade: %s\n",pes.cidade_Pessoa);
+			printf("----------------------------------------------------------------\n\n");
+		}
+	}
+		system("pause");
+		fclose(arquivo);
+		main();
+}
 
+void pesquisa_Pessoa(){
+	FILE *arquivo;
+	PESSOA pes;
+	
+	char nome[30];
+	getchar();
+	
+	arquivo = fopen("pessoas.txt","r");
+	if(arquivo == NULL){
+		cabecalho();
+		printf("Erro ao abrir o arquivo!\n");
+		system("pause");
+		main();
+		
+	}else{
+			cabecalho();
+			fflush(stdin);
+			printf("Digite o nome a ser pesquisado: ");
+			gets(nome);
+			while( fread(&pes, sizeof(PESSOA), 1, arquivo) == 1){
+				if(strcmp(nome,pes.nome_Pessoa) == 0){
+					printf("Nome: %s\n",pes.nome_Pessoa);
+					printf("Sexo: %s\n",pes.sexo_Pessoa);
+					printf("Data de nascimento: %d/%d/%d\n",pes.dia,pes.mes,pes.ano);
+					printf("Estado: %s\n",pes.estado_Pessoa);
+					printf("Cidade: %s\n",pes.cidade_Pessoa);
+					printf("----------------------------------------------------------------\n\n");
+				}
+			}
+			printf("Deseja pesquisar novamente? ");
+			if(getchar() == 's'){
+				pesquisa_Pessoa();
+			}else{
+			fclose(arquivo);
+			main();
+			}
+	} 
+		
 
 
 }
+
+void lista_pessoas_estado(){
+	
+	
+	
+}
+
+void lista_pessoas_cidade(){
+	
+	
+	
+}
+
