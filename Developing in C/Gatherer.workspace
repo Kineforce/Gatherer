@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CodeLite_Workspace Name="Gatherer" Database="" Version="10.0.0">
-  <Project Name="Gatherer" Path="Gatherer.project" Active="Yes"/>
+  <Project Name="Gatherer" Path="Gatherer/Gatherer.project" Active="Yes"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug" Selected="yes">
       <Environment/>

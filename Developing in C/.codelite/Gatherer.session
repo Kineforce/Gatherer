@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Session Name="C:\Users\Promitere\Documents\Gatherer.workspace">
+  <int Value="0" Name="m_selectedTab"/>
+  <wxString Value="C:\Users\Promitere\Documents\Gatherer.workspace" Name="m_workspaceName"/>
+  <TabInfoArray Name="TabInfoArray">
+    <TabInfo>
+      <wxString Value="C:\Users\Promitere\Documents\Gatherer\main.c" Name="FileName"/>
+      <int Value="38" Name="FirstVisibleLine"/>
+      <int Value="39" Name="CurrentLine"/>
+      <wxArrayString Name="Bookmarks"/>
+      <IntVector Name="CollapsedFolds">
+        <IntVectorItem Value="48"/>
+        <IntVectorItem Value="141"/>
+        <IntVectorItem Value="151"/>
+        <IntVectorItem Value="178"/>
+        <IntVectorItem Value="209"/>
+        <IntVectorItem Value="240"/>
+        <IntVectorItem Value="292"/>
+        <IntVectorItem Value="317"/>
+        <IntVectorItem Value="338"/>
+        <IntVectorItem Value="363"/>
+        <IntVectorItem Value="405"/>
+        <IntVectorItem Value="411"/>
+      </IntVector>
+    </TabInfo>
+  </TabInfoArray>
+  <SerializedObject Name="m_breakpoints">
+    <long Value="0" Name="Count"/>
+  </SerializedObject>
+</Session>

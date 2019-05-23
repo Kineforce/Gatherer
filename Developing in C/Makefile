@@ -2,7 +2,7 @@
 
 All:
 	@echo "----------Building project:[ Gatherer - Debug ]----------"
-	@"$(MAKE)" -f  "Gatherer.mk"
+	@cd "Gatherer" && "$(MAKE)" -f  "Gatherer.mk"
 clean:
 	@echo "----------Cleaning project:[ Gatherer - Debug ]----------"
-	@"$(MAKE)" -f  "Gatherer.mk" clean
+	@cd "Gatherer" && "$(MAKE)" -f  "Gatherer.mk" clean
