@@ -5,15 +5,15 @@
 ## Debug
 ProjectName            :=Gatherer
 ConfigurationName      :=Debug
-WorkspacePath          :=C:/Users/Promitere/Documents
-ProjectPath            :=C:/Users/Promitere/Documents/Gatherer
+WorkspacePath          :="C:/Users/Promitere/Desktop/Developing in C"
+ProjectPath            :="C:/Users/Promitere/Desktop/Developing in C/Gatherer"
 IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Promitere
-Date                   :=23/05/2019
+Date                   :=24/05/2019
 CodeLitePath           :="C:/Program Files/CodeLite"
 LinkerName             :=C:/MinGW/bin/g++.exe
 SharedObjectLinkerName :=C:/MinGW/bin/g++.exe -shared -fPIC
@@ -94,7 +94,7 @@ PreBuild:
 ## Objects
 ##
 $(IntermediateDirectory)/main.c$(ObjectSuffix): main.c $(IntermediateDirectory)/main.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "C:/Users/Promitere/Documents/Gatherer/main.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/main.c$(ObjectSuffix) $(IncludePath)
+	$(CC) $(SourceSwitch) "C:/Users/Promitere/Desktop/Developing in C/Gatherer/main.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/main.c$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/main.c$(DependSuffix): main.c
 	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/main.c$(ObjectSuffix) -MF$(IntermediateDirectory)/main.c$(DependSuffix) -MM main.c
 
