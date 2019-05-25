@@ -26,10 +26,21 @@ void lista_pessoas_estado();
 void converte_Maiusc(char nome[]);
 int busca_nome(char string[],char substring[]);
 void remove_pessoa();
-
+void armazena(char nome_pes[],char sexo_pes[],char est_pes[], char cid_pes[], int ano_pes,int mes_pes, int dia_pes);
 
 // Estruturas
 
+
+typedef struct temporario TEMPORARIO;
+struct temporario{
+	char nome_Pessoa[30];
+	char sexo_Pessoa[2];
+	char cidade_Pessoa[30];
+	char estado_Pessoa[30];
+	int dia;
+	int mes;
+	int ano;
+};
 
 typedef struct pessoa PESSOA;
 struct pessoa{
@@ -533,15 +544,16 @@ int busca_nome(char string[],char substring[]){
 		}
 }
 
-/*void remove_pessoa(){
+void remove_pessoa(){
 	FILE *arquivo,*alternativo;
 	PESSOA pes;
-	
+	TEMPORARIO temp;
+
 	
 	char nome[30];
 	getchar();
 	
-	
+	alternativo = fopen("alter.txt","a");
 	arquivo = fopen("pessoas.txt","r");
 	if(arquivo == NULL){
 		cabecalho();
@@ -550,39 +562,33 @@ int busca_nome(char string[],char substring[]){
 		main();
 		
 	}else{
-			cabecalho();
-			fflush(stdin);
-			printf("Digite o nome da pessoa a ser deletada: ");
-			gets(nome);
-			converte_Maiusc(nome);
-			while( fread(&pes, sizeof(PESSOA), 1, arquivo) == 1){
-				if(strcmp(pes.nome_Pessoa,nome) != 0){
-					
-					
-					
-					
-					
-				/*while( fread(&pes, sizeof(PESSOA), 1, arquivo) == 1){
-					alternativo = fopen("alternativo.txt","w");
-					fwrite(&pes, sizeof(PESSOA), 1, alternativo);
-				}*/
-					
-					/*printf("Nome: %s\n",pes.nome_Pessoa);
-					printf("Sexo: %s\n",pes.sexo_Pessoa);
-					printf("Data de nascimento: %d/%d/%d\n",pes.dia,pes.mes,pes.ano);
-					printf("Estado: %s\n",pes.estado_Pessoa);
-					printf("Cidade: %s\n",pes.cidade_Pessoa);
-					printf("----------------------------------------------------------------\n\n");
-
-				}
+		cabecalho();
+		fflush(stdin);
+		printf("Digite o nome da pessoa a ser deletada: ");
+		gets(nome);
+		converte_Maiusc(nome);
+		while( fread(&pes, sizeof(PESSOA), 1, arquivo) == 1){
+			if(strcmp(pes.nome_Pessoa,nome) != 0){
+				strcpy(temp.nome_Pessoa,pes.nome_Pessoa);
+				strcpy(temp.sexo_Pessoa,pes.sexo_Pessoa);
+				strcpy(temp.cidade_Pessoa,pes.cidade_Pessoa);	
+				strcpy(temp.estado_Pessoa,pes.estado_Pessoa);
+				temp.ano = pes.ano;
+				temp.mes = pes.mes;
+				temp.dia = pes.dia;
+				fwrite(&temp, sizeof(TEMPORARIO), 1, alternativo);
 			}
+		}
+	}
+				fclose(arquivo);
+				fclose(alternativo);
+				remove("pessoas.txt");
+				rename("alter.txt","pessoas.txt");
 			printf("Deseja deletar novamente? ");
 			if(getchar() == 's'){
 				remove_pessoa();
 			}else{
-			fclose(alternativo);
-			fclose(arquivo);
-			main();
+
+				main();
 			}
-	} 
-}*/
+} 
