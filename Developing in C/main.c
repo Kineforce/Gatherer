@@ -6,9 +6,9 @@
 #include <ctype.h>
 
 
-// Uknown issues: Função de listar pessoas por estado não consegue buscar mais de uma vez.
-// Unkown issues: Concertar as funções para que possam realizar mais uma pesquisa sem voltar ao main.
-
+// Fix remove;
+// Fix Acentuação;
+// Fix Cadastra cidade;
 // Funções globais
 
 void cabecalho();
@@ -27,6 +27,10 @@ void converte_Maiusc(char nome[]);
 int busca_nome(char string[],char substring[]);
 void remove_pessoa();
 void armazena(char nome_pes[],char sexo_pes[],char est_pes[], char cid_pes[], int ano_pes,int mes_pes, int dia_pes);
+void relatorio_demografico();
+int valida_Data(int dd, int mm, int yy);
+void verifica_deleta(char nome[]);
+int compara_estado(char nome[]);
 
 // Estruturas
 
@@ -93,6 +97,7 @@ int main(){
 	printf("\n---- 6 - Consultar pessoa por Nome ------------------------------------");
 	printf("\n---- 7 - Gerar relatorio demografico ----------------------------------");
 	printf("\n---- 8 - Finalizar Programa -------------------------------------------");
+	printf("\n---- 9 - Excluir Pessoa -----------------------------------------------");
 	printf("\n-----------------------------------------------------------------------\n");
 
 	scanf("%d",&escolha_Menu);
@@ -124,10 +129,10 @@ int main(){
 		break;
 
 		case 7:
-			//relatorio_Demografico
+			relatorio_demografico();
 		break;  
 		
-		case 0:
+		case 9:
 			remove_pessoa();
 		break;
 		
@@ -178,24 +183,41 @@ void cadastra_Estado(){
 	
 	FILE *arquivo;
 	ESTADO est;
+	char escolha;
 	
-	arquivo = fopen("database.txt","a");
+	arquivo = fopen("database.txt","a+");
 	
 	if(arquivo == NULL){
 		cabecalho();
 		printf("Erro ao abrir o arquivo!\n");
 		main();
 	}else{
-		do{
+		
 			cabecalho();
 			fflush(stdin);
 			printf("Digite o nome do estado: ");
 			gets(est.nome_Estado);
 			converte_Maiusc(est.nome_Estado);
 			fflush(stdin);
-			fwrite(&est, sizeof(ESTADO), 1, arquivo);
-			printf("Continuar cadastrando? S/n\n");
-		}while(getchar() == 's');
+			
+			//printf("%d",compara_estado(est.nome_Estado));
+			if(compara_estado(est.nome_Estado) == 0){
+				fwrite(&est, sizeof(ESTADO), 1, arquivo);
+			}else{
+				
+				printf("Erro...");
+				sleep(3);
+				fclose(arquivo);
+				cadastra_Estado();
+			}
+			
+			printf("Continuar cadastrando? S ou n\n");
+			scanf("%c",&escolha);
+			escolha = toupper(escolha);
+			if(escolha == 'S'){
+				fclose(arquivo);
+				cadastra_Estado();
+			}
 		fclose(arquivo);
 		main();
 	}
@@ -206,6 +228,7 @@ void cadastra_Cidade(){
 	
 	FILE *arquivo;
 	ESTADO est;
+	char escolha;
 	
 	arquivo = fopen("database.txt","r");
 	
@@ -220,15 +243,21 @@ void cadastra_Cidade(){
 			fflush(stdin);
 			printf("Digite o nome do estado da cidade: ");
 			gets(nome);
+			fflush(stdin);
 			converte_Maiusc(nome);
 			while( fread(&est, sizeof(ESTADO), 1, arquivo)==1){
 				if(strcmp(nome, est.nome_Estado) == 0){
 					cadastra_Cid(nome);
 				}
 			}
+			fflush(stdin);
 			printf("Deseja continuar cadastrando? S ou N ");
-		if(getchar() == 's'){
-		cadastra_Cidade();
+			scanf("%c",&escolha);
+			fflush(stdin);
+			escolha = toupper(escolha);
+		if(escolha == 'S'){
+			fclose(arquivo);
+			cadastra_Cidade();
 		}
 		fclose(arquivo);
 		main();
@@ -256,6 +285,7 @@ void cadastra_Cid(char n_estado[]){
 		strcpy(n_Estado,n_estado);
 		printf("Agora, digite o nome da cidade: ");	
 		fgets(n_Cidade,100,stdin);
+		fflush(stdin);
 		strcat(n_Estado, n_Cidade);
 		strcpy(est.nome_Estado, n_Estado);
 		converte_Maiusc(est.nome_Estado);
@@ -267,6 +297,7 @@ void cadastra_Cid(char n_estado[]){
 }
 
 void cadastra_Pessoa(){
+	
 	setlocale(LC_ALL, "Portuguese");
 	
 	FILE *arquivo;
@@ -304,19 +335,76 @@ if(arquivo == NULL){
 			printf("Digite o sexo da pessoa: M/F ");
 			gets(pes.sexo_Pessoa);
 			converte_Maiusc(pes.sexo_Pessoa);
-			printf("Digite a data de nascimento da pessoa: \n");
-			printf("Digite o dia: \n");
-			scanf("%d",&pes.dia);
-			printf("Digite o mes: \n");
-			scanf("%d",&pes.mes);
-			printf("Digite o ano: \n");
-			scanf("%d",&pes.ano);
+			fflush(stdin);
+			if(*pes.sexo_Pessoa != 'M' && *pes.sexo_Pessoa != 'F'){
+				printf("Validacao de sexo nao confirmada!\n");
+				printf("Deseja tentar outro cadastro? S/n ");
+				if(getchar() == 's'){
+					fclose(arquivo);
+					cadastra_Pessoa();
+				}else{
+				main();
+				}
+			}
+			printf("Entre a data de nascimento no formato: (DD/MM/AAAA) \n");
+			scanf("%d/%d/%d",&pes.dia,&pes.mes,&pes.ano);
+			if(valida_Data(pes.dia,pes.mes,pes.ano) == 1){
+				printf("Validacao de data nao confirmada!\n");
+				printf("Deseja tentar outro cadastro? S/n ");
+				fflush(stdin);
+				if(getchar() == 's'){
+					fclose(arquivo);
+					cadastra_Pessoa();
+				}else{
+				main();
+				}
+			}
+			
 			fwrite(&pes, sizeof(PESSOA), 1, arquivo);
+			printf("Cadastro realizado com sucesso!\n");
+			getchar();
+		}else{
+			printf("Erro, estado ou cidade nao encontrados!\n");
 		}
 	}
+		
+		printf("Deseja tentar outro cadastro? S/n ");
+		if(getchar() == 's'){
+			fclose(arquivo);
+			cadastra_Pessoa();
+		}
 		fclose(arquivo);
 		main();
 }
+
+int valida_Data(int dd, int mm, int yy){
+	if (yy >= 1900 && yy <= 9999)
+	{
+		if (mm >= 1 && mm <= 12)
+		{
+			if ((dd >= 1 && dd <= 31) && (mm == 1 || mm == 3 || mm == 5 || mm == 7 || mm == 8 || mm == 10 || mm == 12))
+				return 0;
+			else if ((dd >= 1 && dd <= 30) && (mm == 4 || mm == 6 || mm == 9 || mm == 11))
+				return 0;
+			else if ((dd >= 1 && dd <= 28) && (mm == 2))
+				return 0;
+			else if (dd == 29 && mm == 2 && (yy % 400 == 0 || (yy % 4 == 0 && yy % 100 != 0)))
+				return 0;
+			else
+				return 1;
+		}
+		else
+		{
+			return 1;
+		}
+	}
+	else
+	{
+		return 1;
+	}
+
+	return 0;
+} 
 
 int compara_estcid_Cadastra(char estcid[]){
 	FILE *arquivo;
@@ -523,6 +611,7 @@ void converte_Maiusc(char nome[]){
 	for(i=0; i<TamStr; i++){
 		nome[i] = toupper (nome[i]); 
 	}
+	fflush(stdin);
 }
 
 int busca_nome(char string[],char substring[]){
@@ -549,8 +638,7 @@ void remove_pessoa(){
 	PESSOA pes;
 	TEMPORARIO temp;
 
-	
-	char nome[30];
+	char nome[50];
 	getchar();
 	
 	alternativo = fopen("alter.txt","a");
@@ -580,15 +668,150 @@ void remove_pessoa(){
 			}
 		}
 	}
-				fclose(arquivo);
-				fclose(alternativo);
-				remove("pessoas.txt");
-				rename("alter.txt","pessoas.txt");
-			printf("Deseja deletar novamente? ");
-			if(getchar() == 's'){
-				remove_pessoa();
-			}else{
-
-				main();
-			}
+		fclose(arquivo);
+		fclose(alternativo);
+		remove("pessoas.txt");
+		rename("alter.txt","pessoas.txt");
+		verifica_deleta(nome);
+		printf("Deseja excluir novamente? ");
+	if(getchar() == 's'){
+		remove_pessoa();
+	}else{
+		main();
+	}
 } 
+
+void relatorio_demografico(){
+	setlocale(LC_ALL, "Portuguese");
+	
+	FILE *arquivo;
+	PESSOA pes;
+	
+	float zero_cinco = 0;
+	float seis_dez = 0;
+	float onze_vinte = 0;
+	float vinteum_quaren = 0;
+	float quarum_sess = 0;
+	float acimasess = 0;
+	
+	float masc,fem;
+	int cont;
+	masc = 0;
+	fem = 0;
+	cont = 0;
+	int ano_atual = 2019;
+	
+	getchar();
+	
+	arquivo = fopen("pessoas.txt","r");
+	if(arquivo == NULL){
+		cabecalho();
+		printf("Erro ao abrir o arquivo!\n");
+		system("pause");
+		main();
+		
+	}else{
+			cabecalho();
+			fflush(stdin);
+			while( fread(&pes, sizeof(PESSOA), 1, arquivo) == 1){
+				if (ano_atual - pes.ano >= 0 && ano_atual - pes.ano <=5  ){
+					zero_cinco++;
+				}
+				if (ano_atual - pes.ano >=6 && ano_atual - pes.ano <=10 ){
+					seis_dez++;
+				}
+				if (ano_atual - pes.ano >=11 && ano_atual - pes.ano <=20 ){
+					onze_vinte++;
+				}
+				if (ano_atual - pes.ano >=21 && ano_atual - pes.ano <=40 ){
+					vinteum_quaren++;
+				}
+				if (ano_atual - pes.ano >=41 && ano_atual - pes.ano <=60 ){
+					quarum_sess++;
+				}
+				if (ano_atual - pes.ano >=60 && ano_atual - pes.ano <=122){
+					acimasess++;
+				}
+				if ('M' == *pes.sexo_Pessoa){
+					masc++;
+				}
+				if ('F' == *pes.sexo_Pessoa){
+					fem++;
+				}
+				cont++;
+			}
+			printf("Relatorio demografico gerado com sucesso!!\n\n");
+			printf("Pessoas com idade entre 0 a 5: %.0f %%\n",(zero_cinco / cont) * 100);
+			printf("Pessoas com idade entre 6 a 10: %.0f %%\n",(seis_dez / cont) * 100);
+			printf("Pessoas com idade entre 11 a 20: %.0f %%\n",(onze_vinte / cont) * 100);
+			printf("Pessoas com idade entre 21 a 40: %.0f %%\n",(vinteum_quaren / cont) * 100);
+			printf("Pessoas com idade entre 41 a 60: %.0f %%\n",(quarum_sess / cont) * 100);
+			printf("Pessoas com idade superior a 60: %.0f %%\n\n",(acimasess / cont) * 100);
+			printf("Pessoas com o sexo 'F': %.0f %%\n",(fem / cont) * 100);
+			printf("Pessoas com o sexo 'M': %.0f %%\n\n",(masc / cont) * 100);
+			printf("Pressione enter para voltar ao menu!\n");
+			getchar();
+			fclose(arquivo);
+			main();
+			
+	} 
+}
+
+void verifica_deleta(char nome[]){
+	
+	FILE *arquivo;
+	arquivo = fopen("pessoas.txt","r");
+	PESSOA pes;
+	
+	int cont;
+	cont = 0;
+	if(arquivo == NULL){
+			cabecalho();
+			printf("Erro ao abrir o arquivo!\n");
+			system("pause");
+			main();
+		}else{
+			while( fread(&pes, sizeof(PESSOA), 1 , arquivo ) == 1){
+				if(strcmp(nome,pes.nome_Pessoa) == 0){
+					cont = cont + 1;
+				}
+			}
+		}
+		
+		if(cont != 0){
+			printf("Exclusao nao foi realizada com sucesso!\n");
+		}else{
+			printf("Exclusao realizada com sucesso!\n");
+		}
+		fclose(arquivo);
+}
+
+int compara_estado(char nome[]){
+	FILE *arquivo;
+	arquivo = fopen("database.txt","r");
+	
+	ESTADO est;
+	
+	
+	int resultado = 0;
+	puts(nome);
+	if(arquivo == NULL){
+		cabecalho();
+		printf("Erro ao abrir o arquivo!\n");
+		main();
+	}else{
+		
+		while( fread(&est, sizeof(ESTADO), 1, arquivo) == 1){
+			if(strcmp(est.nome_Estado,nome) == 0){
+				resultado =  1;
+				
+			}
+			if(strcmp(est.nome_Estado,nome) == 1){
+				resultado = 0;
+			}
+		}
+	}
+	
+	fclose(arquivo);
+	return resultado;
+}
