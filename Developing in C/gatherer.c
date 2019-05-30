@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <conio.h>
 #include <locale.h>
 #include <string.h>
 #include <ctype.h>
@@ -74,7 +73,7 @@ int main(){
 	
 	int escolha_Menu;
 
-	system("cls");
+	system("clear");
 	printf("-----------------------------------------------------------------------");
 	printf("\n-----------------------------------------------------------------------");
 	printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
@@ -82,7 +81,7 @@ int main(){
 	printf("\n-----------------------------------------------------------------------");
 	printf("\n----Pressione enter para continuar...\n");
 	getchar();
-	system("cls");
+	system("clear");
 
 	printf("-----------------------------------------------------------------------");
 	printf("\n-----------------------------------------------------------------------");
@@ -101,6 +100,7 @@ int main(){
 	printf("\n-----------------------------------------------------------------------\n");
 
 	scanf("%d",&escolha_Menu);
+	getchar();
 
 	switch(escolha_Menu)
 	{
@@ -145,7 +145,7 @@ int main(){
 		break;
  
 		case 8:
-			system("cls");
+			system("clear");
 			printf("-----------------------------------------------------------------------");
 			printf("\n-----------------------------------------------------------------------");
 			printf("\n--------------P R O G R A M A  F I N A L I Z A D O --------------------");
@@ -155,7 +155,7 @@ int main(){
 		break;
 		
 		default:
-			system("cls");
+			system("clear");
 			printf("-----------------------------------------------------------------------");
 			printf("\n-----------------------------------------------------------------------");
 			printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
@@ -170,7 +170,7 @@ int main(){
 
 void cabecalho(){
 	
-		system("cls");
+		system("clear");
         printf("-----------------------------------------------------------------------");
         printf("\n-----------------------------------------------------------------------");
         printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
@@ -194,25 +194,15 @@ void cadastra_Estado(){
 	}else{
 		
 			cabecalho();
-			fflush(stdin);
+			
 			printf("Digite o nome do estado: ");
 			gets(est.nome_Estado);
 			converte_Maiusc(est.nome_Estado);
-			fflush(stdin);
 			
-			//printf("%d",compara_estado(est.nome_Estado));
-			if(compara_estado(est.nome_Estado) == 0){
-				fwrite(&est, sizeof(ESTADO), 1, arquivo);
-			}else{
-				
-				printf("Erro...");
-				sleep(3);
-				fclose(arquivo);
-				cadastra_Estado();
-			}
-			
+			fwrite(&est, sizeof(ESTADO), 1, arquivo);
 			printf("Continuar cadastrando? S ou n\n");
 			scanf("%c",&escolha);
+			getchar();	
 			escolha = toupper(escolha);
 			if(escolha == 'S'){
 				fclose(arquivo);
@@ -240,20 +230,17 @@ void cadastra_Cidade(){
 	}else{
 		
 			cabecalho();
-			fflush(stdin);
 			printf("Digite o nome do estado da cidade: ");
 			gets(nome);
-			fflush(stdin);
 			converte_Maiusc(nome);
 			while( fread(&est, sizeof(ESTADO), 1, arquivo)==1){
 				if(strcmp(nome, est.nome_Estado) == 0){
 					cadastra_Cid(nome);
 				}
 			}
-			fflush(stdin);
 			printf("Deseja continuar cadastrando? S ou N ");
 			scanf("%c",&escolha);
-			fflush(stdin);
+			getchar();
 			escolha = toupper(escolha);
 		if(escolha == 'S'){
 			fclose(arquivo);
@@ -281,11 +268,9 @@ void cadastra_Cid(char n_estado[]){
 	}else{
 		cabecalho();
 		printf("Estado detectado com sucesso!\n");
-		fflush(stdin);
 		strcpy(n_Estado,n_estado);
 		printf("Agora, digite o nome da cidade: ");	
 		fgets(n_Cidade,100,stdin);
-		fflush(stdin);
 		strcat(n_Estado, n_Cidade);
 		strcpy(est.nome_Estado, n_Estado);
 		converte_Maiusc(est.nome_Estado);
@@ -314,7 +299,6 @@ if(arquivo == NULL){
 		main();
 	}else{
 		cabecalho();
-		fflush(stdin);
 		printf("Digite o nome do estado da pessoa: ");
 		gets(estateorigin);
 		converte_Maiusc(estateorigin);
@@ -326,7 +310,7 @@ if(arquivo == NULL){
 		converte_Maiusc(estate);
 		if(compara_estcid_Cadastra(estate) == 1){
 			cabecalho();
-			fflush(stdin);
+			
 			strcpy(pes.estado_Pessoa,estateorigin);
 			strcpy(pes.cidade_Pessoa,city);
 			printf("Digite o nome da pessoa: ");
@@ -335,11 +319,12 @@ if(arquivo == NULL){
 			printf("Digite o sexo da pessoa: M/F ");
 			gets(pes.sexo_Pessoa);
 			converte_Maiusc(pes.sexo_Pessoa);
-			fflush(stdin);
+			
 			if(*pes.sexo_Pessoa != 'M' && *pes.sexo_Pessoa != 'F'){
 				printf("Validacao de sexo nao confirmada!\n");
 				printf("Deseja tentar outro cadastro? S/n ");
 				if(getchar() == 's'){
+					getchar();
 					fclose(arquivo);
 					cadastra_Pessoa();
 				}else{
@@ -351,8 +336,9 @@ if(arquivo == NULL){
 			if(valida_Data(pes.dia,pes.mes,pes.ano) == 1){
 				printf("Validacao de data nao confirmada!\n");
 				printf("Deseja tentar outro cadastro? S/n ");
-				fflush(stdin);
+				
 				if(getchar() == 's'){
+					getchar();
 					fclose(arquivo);
 					cadastra_Pessoa();
 				}else{
@@ -370,6 +356,7 @@ if(arquivo == NULL){
 		
 		printf("Deseja tentar outro cadastro? S/n ");
 		if(getchar() == 's'){
+			getchar();
 			fclose(arquivo);
 			cadastra_Pessoa();
 		}
@@ -419,7 +406,7 @@ int compara_estcid_Cadastra(char estcid[]){
 		main();
 	}else{
 		cabecalho();
-		fflush(stdin);
+		
 		while(fread(&est, sizeof(ESTADO), 1, arquivo) == 1){
 			if(strcmp(estcid,est.nome_Estado) == 0){
 				val = 1;
@@ -439,7 +426,7 @@ void lista_cidade(){
 	cabecalho();
 	if(arquivo == NULL){
 		printf("Erro ao abrir o arquivo!\n");
-		system("pause");
+		getchar();
 		main();
 	}else{
 		while(fread(&est, sizeof(ESTADO), 1, arquivo)){
@@ -447,7 +434,7 @@ void lista_cidade(){
 			printf("----------------------------------------------------------------\n\n");
 		}
 	}
-		system("pause");
+		getchar();
 		fclose(arquivo);
 		main();
 }
@@ -460,7 +447,7 @@ void lista_pessoas(){
 	cabecalho();
 	if(arquivo == NULL){
 		printf("Erro ao abrir o arquivo!\n");
-		system("pause");
+		getchar();
 		main();
 	}else{
 		while(fread(&pes, sizeof(PESSOA), 1, arquivo)){
@@ -472,7 +459,7 @@ void lista_pessoas(){
 			printf("----------------------------------------------------------------\n\n");
 		}
 	}
-		system("pause");
+		getchar();
 		fclose(arquivo);
 		main();
 }
@@ -484,18 +471,16 @@ void pesquisa_Pessoa(){
 	PESSOA pes;
 	
 	char nome[30];
-	getchar();
-	
+
 	arquivo = fopen("pessoas.txt","r");
 	if(arquivo == NULL){
 		cabecalho();
 		printf("Erro ao abrir o arquivo!\n");
-		system("pause");
+		getchar();
 		main();
 		
 	}else{
 			cabecalho();
-			fflush(stdin);
 			printf("Digite o nome a ser pesquisado: ");
 			gets(nome);
 			converte_Maiusc(nome);
@@ -511,6 +496,8 @@ void pesquisa_Pessoa(){
 			}
 			printf("Deseja pesquisar novamente? ");
 			if(getchar() == 's'){
+				getchar();
+				fclose(arquivo);
 				pesquisa_Pessoa();
 			}else{
 			fclose(arquivo);
@@ -526,18 +513,16 @@ void lista_pessoas_estado(){
 	PESSOA pes;
 	
 	char nome[30];
-	getchar();
 	
 	arquivo = fopen("pessoas.txt","r");
 	if(arquivo == NULL){
 		cabecalho();
 		printf("Erro ao abrir o arquivo!\n");
-		system("pause");
+		getchar();
 		main();
 		
 	}else{
 			cabecalho();
-			fflush(stdin);
 			printf("Digite o nome do estado a ser escaneado: ");
 			gets(nome);
 			converte_Maiusc(nome);
@@ -553,6 +538,8 @@ void lista_pessoas_estado(){
 			}
 			printf("Deseja pesquisar novamente? ");
 			if(getchar() == 's'){
+				fclose(arquivo);
+				getchar();
 				lista_pessoas_estado();
 			}else{
 			fclose(arquivo);
@@ -568,18 +555,16 @@ void lista_pessoas_cidade(){
 	PESSOA pes;
 	
 	char nome[30];
-	getchar();
 	
 	arquivo = fopen("pessoas.txt","r");
 	if(arquivo == NULL){
 		cabecalho();
 		printf("Erro ao abrir o arquivo!\n");
-		system("pause");
+		getchar();
 		main();
 		
 	}else{
 			cabecalho();
-			fflush(stdin);
 			printf("Digite o nome da cidade a ser escaneado: ");
 			fgets(nome,100,stdin);
 			converte_Maiusc(nome);
@@ -595,6 +580,8 @@ void lista_pessoas_cidade(){
 			}
 			printf("Deseja pesquisar novamente? ");
 			if(getchar() == 's'){
+				fclose(arquivo);
+				getchar();
 				lista_pessoas_cidade();
 			}else{
 			fclose(arquivo);
@@ -611,7 +598,7 @@ void converte_Maiusc(char nome[]){
 	for(i=0; i<TamStr; i++){
 		nome[i] = toupper (nome[i]); 
 	}
-	fflush(stdin);
+	
 }
 
 int busca_nome(char string[],char substring[]){
@@ -639,19 +626,17 @@ void remove_pessoa(){
 	TEMPORARIO temp;
 
 	char nome[50];
-	getchar();
 	
 	alternativo = fopen("alter.txt","a");
 	arquivo = fopen("pessoas.txt","r");
 	if(arquivo == NULL){
 		cabecalho();
 		printf("Erro ao abrir o arquivo!\n");
-		system("pause");
+		getchar();
 		main();
 		
 	}else{
 		cabecalho();
-		fflush(stdin);
 		printf("Digite o nome da pessoa a ser deletada: ");
 		gets(nome);
 		converte_Maiusc(nome);
@@ -675,8 +660,11 @@ void remove_pessoa(){
 		verifica_deleta(nome);
 		printf("Deseja excluir novamente? ");
 	if(getchar() == 's'){
+		fclose(arquivo);
+		getchar();
 		remove_pessoa();
 	}else{
+		fclose(arquivo);
 		main();
 	}
 } 
@@ -700,19 +688,16 @@ void relatorio_demografico(){
 	fem = 0;
 	cont = 0;
 	int ano_atual = 2019;
-	
-	getchar();
-	
+		
 	arquivo = fopen("pessoas.txt","r");
 	if(arquivo == NULL){
 		cabecalho();
 		printf("Erro ao abrir o arquivo!\n");
-		system("pause");
+		getchar();
 		main();
 		
 	}else{
 			cabecalho();
-			fflush(stdin);
 			while( fread(&pes, sizeof(PESSOA), 1, arquivo) == 1){
 				if (ano_atual - pes.ano >= 0 && ano_atual - pes.ano <=5  ){
 					zero_cinco++;
@@ -768,7 +753,7 @@ void verifica_deleta(char nome[]){
 	if(arquivo == NULL){
 			cabecalho();
 			printf("Erro ao abrir o arquivo!\n");
-			system("pause");
+			getchar();
 			main();
 		}else{
 			while( fread(&pes, sizeof(PESSOA), 1 , arquivo ) == 1){
