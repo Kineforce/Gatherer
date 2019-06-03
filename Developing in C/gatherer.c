@@ -619,7 +619,7 @@ int busca_nome(char string[],char substring[]){
 			return 0;
 		}
 }
-//gg
+
 void remove_pessoa(){
 	FILE *arquivo,*alternativo;
 	PESSOA pes;
