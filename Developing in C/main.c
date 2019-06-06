@@ -30,7 +30,6 @@ void relatorio_demografico();
 int valida_Data(int dd, int mm, int yy);
 void verifica_deleta(char nome[]);
 int compara_estado(char nome[]);
-int compara_cidade(char nome[]);
 
 // Estruturas
 
@@ -192,31 +191,15 @@ void cadastra_Estado(){
 		cabecalho();
 		printf("Erro ao abrir o arquivo!\n");
 		main();
-	}
+	}else{
+		
 			cabecalho();
+			
 			printf("Digite o nome do estado: ");
 			gets(est.nome_Estado);
-
 			converte_Maiusc(est.nome_Estado);
-			if(compara_estado(est.nome_Estado) == 0){
-				printf("Cadastro permitido!\n");
-				fwrite(&est, sizeof(ESTADO), 1, arquivo);
-			}
-			if(compara_estado(est.nome_Estado) == 1){
-				printf("Cadastro não permitido!\n");
-				printf("Continuar cadastrando? S ou n\n");
-				scanf("%c",&escolha);
-				getchar();	
-				escolha = toupper(escolha);
-			if(escolha == 'S'){
-				fclose(arquivo);
-				cadastra_Estado();
-			}
-			if(escolha != 'S'){
-				fclose(arquivo);
-				main();
-			}
-		}
+			
+			fwrite(&est, sizeof(ESTADO), 1, arquivo);
 			printf("Continuar cadastrando? S ou n\n");
 			scanf("%c",&escolha);
 			getchar();	
@@ -227,6 +210,7 @@ void cadastra_Estado(){
 			}
 		fclose(arquivo);
 		main();
+	}
 }
 
 void cadastra_Cidade(){
@@ -272,7 +256,6 @@ void cadastra_Cid(char n_estado[]){
 	
 	FILE *arquivo;
 	ESTADO est;
-	char escolha;
 	
 	char n_Estado[300];
 	char n_Cidade[100];
@@ -282,7 +265,7 @@ void cadastra_Cid(char n_estado[]){
 	if(arquivo == NULL){
 		printf("Erro ao abrir o arquivo!\n");
 		main();
-	}
+	}else{
 		cabecalho();
 		printf("Estado detectado com sucesso!\n");
 		strcpy(n_Estado,n_estado);
@@ -291,37 +274,11 @@ void cadastra_Cid(char n_estado[]){
 		strcat(n_Estado, n_Cidade);
 		strcpy(est.nome_Estado, n_Estado);
 		converte_Maiusc(est.nome_Estado);
-
-		if(compara_cidade(est.nome_Estado) == 0){
-			printf("Cadastro permitido!\n");
-			fwrite(&est, sizeof(ESTADO), 1, arquivo);
-		}
-		if(compara_cidade(est.nome_Estado) == 1){
-			printf("Cadastro não permitido!\n");
-			printf("Continuar cadastrando? S ou n\n");
-			scanf("%c",&escolha);
-			getchar();	
-			escolha = toupper(escolha);
-		if(escolha == 'S'){
-			fclose(arquivo);
-			cadastra_Cidade();
-		}
-		if(escolha != 'S'){
-			fclose(arquivo);
-			main();
-		}
+		fwrite(&est, sizeof(ESTADO), 1, arquivo);
 	}
-		printf("Continuar cadastrando? S ou n\n");
-		scanf("%c",&escolha);
-		getchar();	
-		escolha = toupper(escolha);
-		if(escolha == 'S'){
-			fclose(arquivo);
-			cadastra_Cidade();
-		}
 	fclose(arquivo);
-	main();
-
+	
+	
 }
 
 void cadastra_Pessoa(){
@@ -819,53 +776,27 @@ int compara_estado(char nome[]){
 	arquivo = fopen("database.txt","r");
 	
 	ESTADO est;
+	
+	
 	int resultado = 0;
-
+	puts(nome);
 	if(arquivo == NULL){
 		cabecalho();
 		printf("Erro ao abrir o arquivo!\n");
 		main();
 	}else{
-		while(fread(&est, sizeof(ESTADO), 1, arquivo) == 1){
+		
+		while( fread(&est, sizeof(ESTADO), 1, arquivo) == 1){
 			if(strcmp(est.nome_Estado,nome) == 0){
 				resultado =  1;
+				
 			}
-
-			}
-			while(fread(&est, sizeof(ESTADO), 1, arquivo) == 1){
 			if(strcmp(est.nome_Estado,nome) == 1){
 				resultado = 0;
 			}
-		}	
-}
+		}
+	}
 	
-	return resultado;
-}
-
-int compara_cidade(char nome[]){
-	FILE *arquivo;
-	arquivo = fopen("cidade.txt","r");
-	
-	ESTADO est;
-	int resultado = 0;
-
-	if(arquivo == NULL){
-		cabecalho();
-		printf("Erro ao abrir o arquivo!\n");
-		main();
-	}else{
-		while(fread(&est, sizeof(ESTADO), 1, arquivo) == 1){
-			if(strcmp(est.nome_Estado,nome) == 0){
-				resultado =  1;
-			}
-
-			}
-			while(fread(&est, sizeof(ESTADO), 1, arquivo) == 1){
-			if(strcmp(est.nome_Estado,nome) == 1){
-				resultado = 0;
-			}
-		}	
-}
-	
+	fclose(arquivo);
 	return resultado;
 }
