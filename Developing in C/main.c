@@ -3,6 +3,8 @@
 #include <locale.h>
 #include <string.h>
 #include <ctype.h>
+#include <unistd.h>
+#include <stdbool.h>
 
 
 // Fix remove;
@@ -31,6 +33,7 @@ int valida_Data(int dd, int mm, int yy);
 void verifica_deleta(char nome[]);
 int compara_estado(char nome[]);
 int compara_cidade(char nome[]);
+
 
 // Estruturas
 
@@ -75,16 +78,10 @@ int main(){
 	int escolha_Menu;
 
 	system("cls");
-	printf("-----------------------------------------------------------------------");
-	printf("\n-----------------------------------------------------------------------");
-	printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
-	printf("\n-----------------------------------------------------------------------");
-	printf("\n-----------------------------------------------------------------------");
-	printf("\n----Pressione enter para continuar...\n");
-	getchar();
-	system("cls");
 
 	printf("-----------------------------------------------------------------------");
+	printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
+	printf("\n-----------------------------------------------------------------------");
 	printf("\n-----------------------------------------------------------------------");
 	printf("\n----M E N U  P R I N C I P A L ----------------------------------------");
 	printf("\n-----------------------------------------------------------------------");
@@ -95,7 +92,7 @@ int main(){
 	printf("\n---- 4 - Listar pessoas por Estado ------------------------------------");
 	printf("\n---- 5 - Listar pessoas por Cidade ------------------------------------");
 	printf("\n---- 6 - Consultar pessoa por Nome ------------------------------------");
-	printf("\n---- 7 - Gerar relatorio demografico ----------------------------------");
+	printf("\n---- 7 - Gerar relatório demográfico ----------------------------------");
 	printf("\n---- 8 - Finalizar Programa -------------------------------------------");
 	printf("\n---- 9 - Excluir Pessoa -----------------------------------------------");
 	printf("\n-----------------------------------------------------------------------\n");
@@ -186,7 +183,7 @@ void cadastra_Estado(){
 	ESTADO est;
 	char escolha;
 	
-	arquivo = fopen("database.txt","a+");
+	arquivo = fopen("database.txt","a+b");
 	
 	if(arquivo == NULL){
 		cabecalho();
@@ -195,7 +192,10 @@ void cadastra_Estado(){
 	}
 			cabecalho();
 			printf("Digite o nome do estado: ");
-			gets(est.nome_Estado);
+			fgets(est.nome_Estado,sizeof(est.nome_Estado),stdin);
+			est.nome_Estado[strlen(est.nome_Estado)-1]=est.nome_Estado[strlen(est.nome_Estado)];
+
+
 
 			converte_Maiusc(est.nome_Estado);
 			if(compara_estado(est.nome_Estado) == 0){
@@ -236,18 +236,20 @@ void cadastra_Cidade(){
 	ESTADO est;
 	char escolha;
 	
-	arquivo = fopen("database.txt","r");
+	arquivo = fopen("database.txt","rb");
 	
 	char nome[30];
 	
 	if(arquivo == NULL){
 		printf("Erro ao abrir o arquivo!\n");
+
 		main();
 	}else{
 		
 			cabecalho();
 			printf("Digite o nome do estado da cidade: ");
-			gets(nome);
+			fgets(nome,sizeof(nome),stdin);
+			nome[strlen(nome)-1]=nome[strlen(nome)];
 			converte_Maiusc(nome);
 			while( fread(&est, sizeof(ESTADO), 1, arquivo)==1){
 				if(strcmp(nome, est.nome_Estado) == 0){
@@ -277,7 +279,7 @@ void cadastra_Cid(char n_estado[]){
 	char n_Estado[300];
 	char n_Cidade[100];
 	
-	arquivo = fopen("cidade.txt","a");
+	arquivo = fopen("cidade.txt","ab");
 	
 	if(arquivo == NULL){
 		printf("Erro ao abrir o arquivo!\n");
@@ -330,7 +332,7 @@ void cadastra_Pessoa(){
 	
 	FILE *arquivo;
 	PESSOA pes;
-	arquivo = fopen("pessoas.txt","a");
+	arquivo = fopen("pessoas.txt","ab");
 	
 	char city[100];
 	char estate[100];
@@ -343,24 +345,28 @@ if(arquivo == NULL){
 	}else{
 		cabecalho();
 		printf("Digite o nome do estado da pessoa: ");
-		gets(estateorigin);
+		fgets(estateorigin,sizeof(estateorigin),stdin);
+		estateorigin[strlen(estateorigin)-1]=estateorigin[strlen(estateorigin)];			
 		converte_Maiusc(estateorigin);
 		strcpy(estate,estateorigin);
 		printf("Digite o nome da cidade da pessoa: ");
-		fgets(city,100,stdin);
+		fgets(city,sizeof(city),stdin);
 		converte_Maiusc(city);
 		strcat(estate,city);
 		converte_Maiusc(estate);
+
+		
 		if(compara_estcid_Cadastra(estate) == 1){
 			cabecalho();
 			
 			strcpy(pes.estado_Pessoa,estateorigin);
 			strcpy(pes.cidade_Pessoa,city);
 			printf("Digite o nome da pessoa: ");
-			gets(pes.nome_Pessoa);
+			fgets(pes.nome_Pessoa,sizeof(pes.nome_Pessoa),stdin);
+			pes.nome_Pessoa[strlen(pes.nome_Pessoa)-1]=pes.nome_Pessoa[strlen(pes.nome_Pessoa)];
 			converte_Maiusc(pes.nome_Pessoa);
 			printf("Digite o sexo da pessoa: M/F ");
-			gets(pes.sexo_Pessoa);
+			fgets(pes.sexo_Pessoa,sizeof(pes.sexo_Pessoa),stdin);
 			converte_Maiusc(pes.sexo_Pessoa);
 			
 			if(*pes.sexo_Pessoa != 'M' && *pes.sexo_Pessoa != 'F'){
@@ -388,7 +394,8 @@ if(arquivo == NULL){
 				main();
 				}
 			}
-			
+
+
 			fwrite(&pes, sizeof(PESSOA), 1, arquivo);
 			printf("Cadastro realizado com sucesso!\n");
 			getchar();
@@ -441,7 +448,7 @@ int compara_estcid_Cadastra(char estcid[]){
 	ESTADO est;
 	
 	int val;
-	arquivo = fopen("cidade.txt","r");
+	arquivo = fopen("cidade.txt","rb");
 		
 		
 	if(arquivo == NULL){
@@ -464,7 +471,7 @@ return val;
 void lista_cidade(){
 	FILE *arquivo;
 	ESTADO est;
-	arquivo = fopen("cidade.txt","r");
+	arquivo = fopen("cidade.txt","rb");
 	
 	cabecalho();
 	if(arquivo == NULL){
@@ -485,7 +492,7 @@ void lista_cidade(){
 void lista_pessoas(){
 	FILE *arquivo;
 	PESSOA pes;
-	arquivo = fopen("pessoas.txt","r");
+	arquivo = fopen("pessoas.txt","rb");
 	
 	cabecalho();
 	if(arquivo == NULL){
@@ -515,7 +522,7 @@ void pesquisa_Pessoa(){
 	
 	char nome[30];
 
-	arquivo = fopen("pessoas.txt","r");
+	arquivo = fopen("pessoas.txt","rb");
 	if(arquivo == NULL){
 		cabecalho();
 		printf("Erro ao abrir o arquivo!\n");
@@ -525,7 +532,8 @@ void pesquisa_Pessoa(){
 	}else{
 			cabecalho();
 			printf("Digite o nome a ser pesquisado: ");
-			gets(nome);
+			fgets(nome,sizeof(nome),stdin);
+			nome[strlen(nome)-1]=nome[strlen(nome)];
 			converte_Maiusc(nome);
 			while( fread(&pes, sizeof(PESSOA), 1, arquivo) == 1){
 				if(busca_nome(pes.nome_Pessoa,nome) == 1){
@@ -557,7 +565,7 @@ void lista_pessoas_estado(){
 	
 	char nome[30];
 	
-	arquivo = fopen("pessoas.txt","r");
+	arquivo = fopen("pessoas.txt","rb");
 	if(arquivo == NULL){
 		cabecalho();
 		printf("Erro ao abrir o arquivo!\n");
@@ -567,7 +575,9 @@ void lista_pessoas_estado(){
 	}else{
 			cabecalho();
 			printf("Digite o nome do estado a ser escaneado: ");
-			gets(nome);
+			fgets(nome,sizeof(nome),stdin);
+			nome[strlen(nome)-1]=nome[strlen(nome)];
+
 			converte_Maiusc(nome);
 			while( fread(&pes, sizeof(PESSOA), 1, arquivo) == 1){
 				if(strcmp(nome,pes.estado_Pessoa) == 0){
@@ -599,7 +609,7 @@ void lista_pessoas_cidade(){
 	
 	char nome[30];
 	
-	arquivo = fopen("pessoas.txt","r");
+	arquivo = fopen("pessoas.txt","rb");
 	if(arquivo == NULL){
 		cabecalho();
 		printf("Erro ao abrir o arquivo!\n");
@@ -609,7 +619,7 @@ void lista_pessoas_cidade(){
 	}else{
 			cabecalho();
 			printf("Digite o nome da cidade a ser escaneado: ");
-			fgets(nome,100,stdin);
+			fgets(nome,sizeof(nome),stdin);
 			converte_Maiusc(nome);
 			while( fread(&pes, sizeof(PESSOA), 1, arquivo) == 1){
 				if(strcmp(nome,pes.cidade_Pessoa) == 0){
@@ -670,8 +680,8 @@ void remove_pessoa(){
 
 	char nome[50];
 	
-	alternativo = fopen("alter.txt","a");
-	arquivo = fopen("pessoas.txt","r");
+	alternativo = fopen("alter.txt","ab");
+	arquivo = fopen("pessoas.txt","rb");
 	if(arquivo == NULL){
 		cabecalho();
 		printf("Erro ao abrir o arquivo!\n");
@@ -681,7 +691,8 @@ void remove_pessoa(){
 	}else{
 		cabecalho();
 		printf("Digite o nome da pessoa a ser deletada: ");
-		gets(nome);
+		fgets(nome,sizeof(nome),stdin);
+		nome[strlen(nome)-1]=nome[strlen(nome)];
 		converte_Maiusc(nome);
 		while( fread(&pes, sizeof(PESSOA), 1, arquivo) == 1){
 			if(strcmp(pes.nome_Pessoa,nome) != 0){
@@ -700,14 +711,15 @@ void remove_pessoa(){
 		fclose(alternativo);
 		remove("pessoas.txt");
 		rename("alter.txt","pessoas.txt");
+		printf("Processando dados, um momento...");
+		sleep(2);
 		verifica_deleta(nome);
 		printf("Deseja excluir novamente? ");
+
 	if(getchar() == 's'){
-		fclose(arquivo);
 		getchar();
 		remove_pessoa();
 	}else{
-		fclose(arquivo);
 		main();
 	}
 } 
@@ -732,7 +744,7 @@ void relatorio_demografico(){
 	cont = 0;
 	int ano_atual = 2019;
 		
-	arquivo = fopen("pessoas.txt","r");
+	arquivo = fopen("pessoas.txt","rb");
 	if(arquivo == NULL){
 		cabecalho();
 		printf("Erro ao abrir o arquivo!\n");
@@ -788,35 +800,36 @@ void relatorio_demografico(){
 void verifica_deleta(char nome[]){
 	
 	FILE *arquivo;
-	arquivo = fopen("pessoas.txt","r");
 	PESSOA pes;
-	
-	int cont;
-	cont = 0;
-	if(arquivo == NULL){
+	arquivo = fopen("pessoas.txt","rb");
+	bool var;
+
+		if(arquivo == NULL){
 			cabecalho();
 			printf("Erro ao abrir o arquivo!\n");
 			getchar();
 			main();
-		}else{
-			while( fread(&pes, sizeof(PESSOA), 1 , arquivo ) == 1){
-				if(strcmp(nome,pes.nome_Pessoa) == 0){
-					cont = cont + 1;
-				}
-			}
 		}
-		
-		if(cont != 0){
-			printf("Exclusao nao foi realizada com sucesso!\n");
-		}else{
+
+		while( fread(&pes, sizeof(PESSOA), 1 , arquivo) == 1){
+			if(strcmp(nome,pes.nome_Pessoa) == 1){
+				var = true;
+			}else if(strcmp(nome,pes.nome_Pessoa) == 0){
+				var = false;
+			}
+		}	
+
+		if(var == true){
 			printf("Exclusao realizada com sucesso!\n");
+		}else if(var == false){
+			printf("Exclusao nao realizada com sucesso!\n");
 		}
 		fclose(arquivo);
 }
 
 int compara_estado(char nome[]){
 	FILE *arquivo;
-	arquivo = fopen("database.txt","r");
+	arquivo = fopen("database.txt","rb");
 	
 	ESTADO est;
 	int resultado = 0;
@@ -844,7 +857,7 @@ int compara_estado(char nome[]){
 
 int compara_cidade(char nome[]){
 	FILE *arquivo;
-	arquivo = fopen("cidade.txt","r");
+	arquivo = fopen("cidade.txt","rb");
 	
 	ESTADO est;
 	int resultado = 0;
