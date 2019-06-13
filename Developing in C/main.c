@@ -8,9 +8,11 @@
 
 
 // Fix remove;
-// Fix AcentuaÃ§Ã£o;
+// Fix Acentuação;
 // Fix Cadastra cidade;
-// FunÃ§Ãµes globais
+// Funções globais
+#define MODWORD 500
+
 
 void cabecalho();
 void cadastra_Estado();
@@ -30,20 +32,20 @@ void remove_pessoa();
 void armazena(char nome_pes[],char sexo_pes[],char est_pes[], char cid_pes[], int ano_pes,int mes_pes, int dia_pes);
 void relatorio_demografico();
 int valida_Data(int dd, int mm, int yy);
-void verifica_deleta(char nome[]);
+int verifica_deleta(char nome[]);
 int compara_estado(char nome[]);
 int compara_cidade(char nome[]);
-
 
 // Estruturas
 
 
+
 typedef struct temporario TEMPORARIO;
 struct temporario{
-	char nome_Pessoa[30];
-	char sexo_Pessoa[2];
-	char cidade_Pessoa[30];
-	char estado_Pessoa[30];
+	char nome_Pessoa[MODWORD];
+	char sexo_Pessoa[MODWORD];
+	char cidade_Pessoa[MODWORD];
+	char estado_Pessoa[MODWORD];
 	int dia;
 	int mes;
 	int ano;
@@ -51,10 +53,10 @@ struct temporario{
 
 typedef struct pessoa PESSOA;
 struct pessoa{
-	char nome_Pessoa[30];
-	char sexo_Pessoa[2];
-	char cidade_Pessoa[30];
-	char estado_Pessoa[30];
+	char nome_Pessoa[MODWORD];
+	char sexo_Pessoa[MODWORD];
+	char cidade_Pessoa[MODWORD];
+	char estado_Pessoa[MODWORD];
 	int dia;
 	int mes;
 	int ano;
@@ -63,12 +65,12 @@ struct pessoa{
 
 typedef struct cidade CIDADE;
 struct cidade{
-	char nome_Cidade[30];
+	char nome_Cidade[MODWORD];
 };
 
 typedef struct estado ESTADO;
 struct estado{
-	char nome_Estado[200];
+	char nome_Estado[MODWORD];
 	CIDADE ref_Cidade;
 };
 
@@ -76,6 +78,7 @@ int main(){
 	setlocale(LC_ALL, "Portuguese");
 	
 	int escolha_Menu;
+	fflush(stdin);
 
 	system("cls");
 
@@ -92,7 +95,7 @@ int main(){
 	printf("\n---- 4 - Listar pessoas por Estado ------------------------------------");
 	printf("\n---- 5 - Listar pessoas por Cidade ------------------------------------");
 	printf("\n---- 6 - Consultar pessoa por Nome ------------------------------------");
-	printf("\n---- 7 - Gerar relatÃ³rio demogrÃ¡fico ----------------------------------");
+	printf("\n---- 7 - Gerar relatório demográfico ----------------------------------");
 	printf("\n---- 8 - Finalizar Programa -------------------------------------------");
 	printf("\n---- 9 - Excluir Pessoa -----------------------------------------------");
 	printf("\n-----------------------------------------------------------------------\n");
@@ -130,7 +133,7 @@ int main(){
 			relatorio_demografico();
 		break;  
 		
-		case 9:
+		case 9:	
 			remove_pessoa();
 		break;
 		
@@ -159,8 +162,8 @@ int main(){
 			printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
 			printf("\n-----------------------------------------------------------------------");
 			printf("\n-----------------------------------------------------------------------\n\n");
-			printf("\n----Opcao Invalida! Para retornar ao menu, pressionte Enter...");
-			getchar();
+			printf("\n----Opcao Inválida! Para retornar ao menu, pressionte Enter...\n");
+			system("pause");
 			main();
         break;
 	}
@@ -203,7 +206,7 @@ void cadastra_Estado(){
 				fwrite(&est, sizeof(ESTADO), 1, arquivo);
 			}
 			if(compara_estado(est.nome_Estado) == 1){
-				printf("Cadastro nÃ£o permitido!\n");
+				printf("Cadastro não permitido!\n");
 				printf("Continuar cadastrando? S ou n\n");
 				scanf("%c",&escolha);
 				getchar();	
@@ -238,7 +241,7 @@ void cadastra_Cidade(){
 	
 	arquivo = fopen("database.txt","rb");
 	
-	char nome[30];
+	char nome[MODWORD];
 	
 	if(arquivo == NULL){
 		printf("Erro ao abrir o arquivo!\n");
@@ -276,8 +279,8 @@ void cadastra_Cid(char n_estado[]){
 	ESTADO est;
 	char escolha;
 	
-	char n_Estado[300];
-	char n_Cidade[100];
+	char n_Estado[MODWORD];
+	char n_Cidade[MODWORD];
 	
 	arquivo = fopen("cidade.txt","ab");
 	
@@ -290,16 +293,18 @@ void cadastra_Cid(char n_estado[]){
 		strcpy(n_Estado,n_estado);
 		printf("Agora, digite o nome da cidade: ");	
 		fgets(n_Cidade,100,stdin);
+		est.nome_Estado[strlen(est.nome_Estado)-1]=est.nome_Estado[strlen(est.nome_Estado)];
 		strcat(n_Estado, n_Cidade);
 		strcpy(est.nome_Estado, n_Estado);
 		converte_Maiusc(est.nome_Estado);
+		
 
 		if(compara_cidade(est.nome_Estado) == 0){
 			printf("Cadastro permitido!\n");
 			fwrite(&est, sizeof(ESTADO), 1, arquivo);
 		}
 		if(compara_cidade(est.nome_Estado) == 1){
-			printf("Cadastro nÃ£o permitido!\n");
+			printf("Cadastro não permitido!\n");
 			printf("Continuar cadastrando? S ou n\n");
 			scanf("%c",&escolha);
 			getchar();	
@@ -334,9 +339,10 @@ void cadastra_Pessoa(){
 	PESSOA pes;
 	arquivo = fopen("pessoas.txt","ab");
 	
-	char city[100];
-	char estate[100];
-	char estateorigin[100];
+	
+	char city[MODWORD];
+	char estate[MODWORD];
+	char estateorigin[MODWORD];
 	
 if(arquivo == NULL){
 		cabecalho();
@@ -370,8 +376,11 @@ if(arquivo == NULL){
 			converte_Maiusc(pes.sexo_Pessoa);
 			
 			if(*pes.sexo_Pessoa != 'M' && *pes.sexo_Pessoa != 'F'){
+				
 				printf("Validacao de sexo nao confirmada!\n");
 				printf("Deseja tentar outro cadastro? S/n ");
+				getchar();
+				fflush(stdin);
 				if(getchar() == 's'){
 					getchar();
 					fclose(arquivo);
@@ -385,7 +394,7 @@ if(arquivo == NULL){
 			if(valida_Data(pes.dia,pes.mes,pes.ano) == 1){
 				printf("Validacao de data nao confirmada!\n");
 				printf("Deseja tentar outro cadastro? S/n ");
-				
+				getchar();
 				if(getchar() == 's'){
 					getchar();
 					fclose(arquivo);
@@ -394,8 +403,8 @@ if(arquivo == NULL){
 				main();
 				}
 			}
-
-
+				
+				
 			fwrite(&pes, sizeof(PESSOA), 1, arquivo);
 			printf("Cadastro realizado com sucesso!\n");
 			getchar();
@@ -460,11 +469,11 @@ int compara_estcid_Cadastra(char estcid[]){
 		while(fread(&est, sizeof(ESTADO), 1, arquivo) == 1){
 			if(strcmp(estcid,est.nome_Estado) == 0){
 				val = 1;
-				fclose(arquivo);
 			}
 		}
 	}
-
+	
+fclose(arquivo);
 return val;
 }
 
@@ -494,6 +503,7 @@ void lista_pessoas(){
 	PESSOA pes;
 	arquivo = fopen("pessoas.txt","rb");
 	
+	
 	cabecalho();
 	if(arquivo == NULL){
 		printf("Erro ao abrir o arquivo!\n");
@@ -520,7 +530,7 @@ void pesquisa_Pessoa(){
 	FILE *arquivo;
 	PESSOA pes;
 	
-	char nome[30];
+	char nome[MODWORD];
 
 	arquivo = fopen("pessoas.txt","rb");
 	if(arquivo == NULL){
@@ -563,7 +573,7 @@ void lista_pessoas_estado(){
 	FILE *arquivo;
 	PESSOA pes;
 	
-	char nome[30];
+	char nome[MODWORD];
 	
 	arquivo = fopen("pessoas.txt","rb");
 	if(arquivo == NULL){
@@ -607,7 +617,7 @@ void lista_pessoas_cidade(){
 	FILE *arquivo;
 	PESSOA pes;
 	
-	char nome[30];
+	char nome[MODWORD];
 	
 	arquivo = fopen("pessoas.txt","rb");
 	if(arquivo == NULL){
@@ -646,8 +656,19 @@ void lista_pessoas_cidade(){
 void converte_Maiusc(char nome[]){
 
 	int i, TamStr;
-	
+	int comeco = 0;
+	int fim = strlen(nome) - 1;
+
+	while (isspace((unsigned char) nome[comeco]))
+		comeco++;
+	while ((fim >= comeco) && isspace((unsigned char) nome[fim]))
+		fim--;
+	for (i = comeco; i <= fim; i++)
+		nome[i - comeco] = nome[i];
+	nome[i - comeco] = '\0'; 
 	TamStr = strlen(nome);
+	
+	
 	for(i=0; i<TamStr; i++){
 		nome[i] = toupper (nome[i]); 
 	}
@@ -678,9 +699,10 @@ void remove_pessoa(){
 	PESSOA pes;
 	TEMPORARIO temp;
 
-	char nome[50];
+	bool var;
+	char nome[MODWORD];
 	
-	alternativo = fopen("alter.txt","ab");
+	alternativo = fopen("alter.txt","a+b");
 	arquivo = fopen("pessoas.txt","rb");
 	if(arquivo == NULL){
 		cabecalho();
@@ -694,6 +716,7 @@ void remove_pessoa(){
 		fgets(nome,sizeof(nome),stdin);
 		nome[strlen(nome)-1]=nome[strlen(nome)];
 		converte_Maiusc(nome);
+	
 		while( fread(&pes, sizeof(PESSOA), 1, arquivo) == 1){
 			if(strcmp(pes.nome_Pessoa,nome) != 0){
 				strcpy(temp.nome_Pessoa,pes.nome_Pessoa);
@@ -707,15 +730,14 @@ void remove_pessoa(){
 			}
 		}
 	}
+
 		fclose(arquivo);
 		fclose(alternativo);
 		remove("pessoas.txt");
 		rename("alter.txt","pessoas.txt");
-		printf("Processando dados, um momento...");
+		printf("Processando dados, um momento...\n");
 		sleep(2);
-		verifica_deleta(nome);
-		printf("Deseja excluir novamente? ");
-
+		printf("Deseja tentar outra exclusão? S\\N");
 	if(getchar() == 's'){
 		getchar();
 		remove_pessoa();
@@ -797,13 +819,13 @@ void relatorio_demografico(){
 	} 
 }
 
-void verifica_deleta(char nome[]){
+int verifica_deleta(char nome[]){
 	
 	FILE *arquivo;
 	PESSOA pes;
 	arquivo = fopen("pessoas.txt","rb");
-	bool var;
-
+	int var;
+	var = 0;
 		if(arquivo == NULL){
 			cabecalho();
 			printf("Erro ao abrir o arquivo!\n");
@@ -812,19 +834,13 @@ void verifica_deleta(char nome[]){
 		}
 
 		while( fread(&pes, sizeof(PESSOA), 1 , arquivo) == 1){
-			if(strcmp(nome,pes.nome_Pessoa) == 1){
-				var = true;
-			}else if(strcmp(nome,pes.nome_Pessoa) == 0){
-				var = false;
+			if(strcmp(nome,pes.nome_Pessoa) == 0){
+				var = 1;
 			}
 		}	
-
-		if(var == true){
-			printf("Exclusao realizada com sucesso!\n");
-		}else if(var == false){
-			printf("Exclusao nao realizada com sucesso!\n");
-		}
+							
 		fclose(arquivo);
+		return var;
 }
 
 int compara_estado(char nome[]){
@@ -882,3 +898,4 @@ int compara_cidade(char nome[]){
 	
 	return resultado;
 }
+
