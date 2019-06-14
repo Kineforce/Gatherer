@@ -9,9 +9,9 @@
 
 
 // Fix remove;
-// Fix AcentuaÁ„o;
+// Fix AcentuaÔøΩÔøΩo;
 // Fix Cadastra cidade;
-// FunÁıes globais
+// FunÔøΩÔøΩes globais
 #define MODWORD 500
 
 
@@ -84,7 +84,7 @@ int main(){
 	int escolha_Menu;
 	fflush(stdin);
 
-	system("cls");
+	system("clear");
 
 	printf("-----------------------------------------------------------------------");
 	printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
@@ -99,7 +99,7 @@ int main(){
 	printf("\n---- 4 - Listar pessoas por Estado ------------------------------------");
 	printf("\n---- 5 - Listar pessoas por Cidade ------------------------------------");
 	printf("\n---- 6 - Consultar pessoa por Nome ------------------------------------");
-	printf("\n---- 7 - Gerar relatÛrio demogr·fico ----------------------------------");
+	printf("\n---- 7 - Gerar relat√≥rio demogr√°fico ----------------------------------");
 	printf("\n---- 8 - Finalizar Programa -------------------------------------------");
 	printf("\n---- 9 - Excluir Pessoa -----------------------------------------------");
 	printf("\n-----------------------------------------------------------------------\n");
@@ -150,7 +150,7 @@ int main(){
 		break;
  
 		case 8:
-			system("cls");
+			system("clear");
 			printf("-----------------------------------------------------------------------");
 			printf("\n-----------------------------------------------------------------------");
 			printf("\n--------------P R O G R A M A  F I N A L I Z A D O --------------------");
@@ -160,13 +160,13 @@ int main(){
 		break;
 		
 		default:
-			system("cls");
+			system("clear");
 			printf("-----------------------------------------------------------------------");
 			printf("\n-----------------------------------------------------------------------");
 			printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
 			printf("\n-----------------------------------------------------------------------");
 			printf("\n-----------------------------------------------------------------------\n\n");
-			printf("\n----Opcao Inv·lida! Para retornar ao menu, pressionte Enter...\n");
+			printf("\n----Opc√£o Inv√°lida! Para retornar ao menu, pressionte Enter...\n");
 			system("pause");
 			main();
         break;
@@ -175,7 +175,7 @@ int main(){
 
 void cabecalho(){
 	
-		system("cls");
+		system("clear");
         printf("-----------------------------------------------------------------------");
         printf("\n-----------------------------------------------------------------------");
         printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
@@ -210,8 +210,8 @@ void cadastra_Estado(){
 				fwrite(&est, sizeof(ESTADO), 1, arquivo);
 			}
 			if(compara_estado(est.nome_Estado) == 1){
-				printf("Cadastro n„o permitido!\n");
-				printf("Continuar cadastrando? S ou n\n");
+				printf("Cadastro n√£o permitido!\n");
+				printf("Continuar cadastrando? S\\N\n");
 				scanf("%c",&escolha);
 				getchar();	
 				escolha = toupper(escolha);
@@ -224,7 +224,7 @@ void cadastra_Estado(){
 				main();
 			}
 		}
-			printf("Continuar cadastrando? S ou n\n");
+			printf("Continuar cadastrando? S\\N\n");
 			scanf("%c",&escolha);
 			getchar();	
 			escolha = toupper(escolha);
@@ -263,7 +263,7 @@ void cadastra_Cidade(){
 					cadastra_Cid(nome);
 				}
 			}
-			printf("Deseja continuar cadastrando? S ou N ");
+			printf("Deseja continuar cadastrando? S\\N ");
 			scanf("%c",&escolha);
 			getchar();
 			escolha = toupper(escolha);
@@ -308,8 +308,8 @@ void cadastra_Cid(char n_estado[]){
 			fwrite(&est, sizeof(ESTADO), 1, arquivo);
 		}
 		if(compara_cidade(est.nome_Estado) == 1){
-			printf("Cadastro n„o permitido!\n");
-			printf("Continuar cadastrando? S ou n\n");
+			printf("Cadastro n√£o permitido!\n");
+			printf("Continuar cadastrando? S\\N\n");
 			scanf("%c",&escolha);
 			getchar();	
 			escolha = toupper(escolha);
@@ -322,7 +322,7 @@ void cadastra_Cid(char n_estado[]){
 			main();
 		}
 	}
-		printf("Continuar cadastrando? S ou n\n");
+		printf("Continuar cadastrando? S\\N\n");
 		scanf("%c",&escolha);
 		getchar();	
 		escolha = toupper(escolha);
@@ -381,8 +381,8 @@ if(arquivo == NULL){
 			
 			if(*pes.sexo_Pessoa != 'M' && *pes.sexo_Pessoa != 'F'){
 				
-				printf("Validacao de sexo nao confirmada!\n");
-				printf("Deseja tentar outro cadastro? S/n ");
+				printf("Validac√£o de sexo n√£o confirmada!\n");
+				printf("Deseja tentar outro cadastro? S\\N ");
 				getchar();
 				fflush(stdin);
 				if(getchar() == 's'){
@@ -396,8 +396,8 @@ if(arquivo == NULL){
 			printf("Entre a data de nascimento no formato: (DD/MM/AAAA) \n");
 			scanf("%d/%d/%d",&pes.dia,&pes.mes,&pes.ano);
 			if(valida_Data(pes.dia,pes.mes,pes.ano) == 1){
-				printf("Validacao de data nao confirmada!\n");
-				printf("Deseja tentar outro cadastro? S/n ");
+				printf("Valida√ß√£o de data n√£o confirmada!\n");
+				printf("Deseja tentar outro cadastro? S\\N ");
 				getchar();
 				if(getchar() == 's'){
 					getchar();
@@ -415,11 +415,11 @@ if(arquivo == NULL){
 			printf("Cadastro realizado com sucesso!\n");
 			getchar();
 		}else{
-			printf("Erro, estado ou cidade nao encontrados!\n");
+			printf("Erro, estado ou cidade n√£o encontrados!\n");
 		}
 	}
 		
-		printf("Deseja tentar outro cadastro? S/n ");
+		printf("Deseja tentar outro cadastro? S\\N ");
 		if(getchar() == 's'){
 			getchar();
 			fclose(arquivo);
@@ -542,7 +542,6 @@ void lista_pessoas(){
 			printf("Data de nascimento: %d/%d/%d\n",pes.dia,pes.mes,pes.ano);
 			printf("Estado: %s\n",pes.estado_Pessoa);
 			printf("Cidade: %s\n",pes.cidade_Pessoa);
-			printf("ID: %d\n",pes.ID);
 			printf("----------------------------------------------------------------\n\n");
 		}
 	}
@@ -582,7 +581,7 @@ void pesquisa_Pessoa(){
 					printf("----------------------------------------------------------------\n\n");
 				}
 			}
-			printf("Deseja pesquisar novamente? ");
+			printf("Deseja pesquisar novamente? S\\N ");
 			if(getchar() == 's'){
 				getchar();
 				fclose(arquivo);
@@ -626,7 +625,7 @@ void lista_pessoas_estado(){
 					printf("----------------------------------------------------------------\n\n");
 				}
 			}
-			printf("Deseja pesquisar novamente? ");
+			printf("Deseja pesquisar novamente? S\\N ");
 			if(getchar() == 's'){
 				fclose(arquivo);
 				getchar();
@@ -668,7 +667,7 @@ void lista_pessoas_cidade(){
 					printf("----------------------------------------------------------------\n\n");
 				}
 			}
-			printf("Deseja pesquisar novamente? ");
+			printf("Deseja pesquisar novamente? S\\N ");
 			if(getchar() == 's'){
 				fclose(arquivo);
 				getchar();
@@ -792,7 +791,7 @@ void remove_pessoa(){
 		rename("alter.txt","pessoas.txt");
 		printf("Processando dados, um momento...\n");
 		sleep(2);
-		printf("Deseja tentar outra exclus„o? S\\N ");
+		printf("Deseja tentar outra exclus√£o? S\\N ");
 		fflush(stdin);
 	if(getchar() == 's'){
 		getchar();
@@ -825,7 +824,7 @@ void remove_pessoa(){
 		rename("alter.txt","pessoas.txt");
 		printf("Processando dados, um momento...\n");
 		sleep(2);
-		printf("Deseja tentar outra exclus„o? S\\N ");
+		printf("Deseja tentar outra exclus√£o? S\\N ");
 	if(getchar() == 's'){
 		getchar();
 		remove_pessoa();
@@ -890,7 +889,7 @@ void relatorio_demografico(){
 				}
 				cont++;
 			}
-			printf("Relatorio demografico gerado com sucesso!!\n\n");
+			printf("Relatorio demogr√°fico gerado com sucesso!!\n\n");
 			printf("Pessoas com idade entre 0 a 5: %.0f %%\n",(zero_cinco / cont) * 100);
 			printf("Pessoas com idade entre 6 a 10: %.0f %%\n",(seis_dez / cont) * 100);
 			printf("Pessoas com idade entre 11 a 20: %.0f %%\n",(onze_vinte / cont) * 100);
