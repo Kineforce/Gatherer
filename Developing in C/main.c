@@ -5,6 +5,7 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <time.h>
 
 
 // Fix remove;
@@ -35,6 +36,7 @@ int valida_Data(int dd, int mm, int yy);
 int verifica_deleta(char nome[]);
 int compara_estado(char nome[]);
 int compara_cidade(char nome[]);
+int gera_id();
 
 // Estruturas
 
@@ -49,6 +51,7 @@ struct temporario{
 	int dia;
 	int mes;
 	int ano;
+	int ID;
 };
 
 typedef struct pessoa PESSOA;
@@ -60,6 +63,7 @@ struct pessoa{
 	int dia;
 	int mes;
 	int ano;
+	int ID;
 	
 };
 
@@ -99,7 +103,7 @@ int main(){
 	printf("\n---- 8 - Finalizar Programa -------------------------------------------");
 	printf("\n---- 9 - Excluir Pessoa -----------------------------------------------");
 	printf("\n-----------------------------------------------------------------------\n");
-
+	
 	scanf("%d",&escolha_Menu);
 	getchar();
 
@@ -176,7 +180,7 @@ void cabecalho(){
         printf("\n-----------------------------------------------------------------------");
         printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
         printf("\n-----------------------------------------------------------------------");
-        printf("\n-----------------------------------------------------------------------\n\n");
+        printf("\n-----------------------------------------------------------------------\n\n"); 
 }
 
 void cadastra_Estado(){
@@ -404,7 +408,9 @@ if(arquivo == NULL){
 				}
 			}
 				
-				
+			pes.ID = gera_id();
+			
+			
 			fwrite(&pes, sizeof(PESSOA), 1, arquivo);
 			printf("Cadastro realizado com sucesso!\n");
 			getchar();
@@ -421,6 +427,26 @@ if(arquivo == NULL){
 		}
 		fclose(arquivo);
 		main();
+}
+
+int gera_id(){
+    int var ;
+    FILE * fp = fopen("id.txt", "r") ;
+    if (!fp) {
+        fp = fopen("id.txt", "w") ;
+        if (!fp) return -1 ; 
+        fprintf(fp, "%d", 1) ;
+        fclose(fp) ;
+        return 1;
+    }
+    fscanf(fp, "%d", &var) ;
+    var++;
+
+    fclose(fp); 
+    fp = fopen("id.txt", "w") ;
+    fprintf(fp, "%d", var) ;
+    fclose(fp) ;
+    return var ;
 }
 
 int valida_Data(int dd, int mm, int yy){
@@ -516,6 +542,7 @@ void lista_pessoas(){
 			printf("Data de nascimento: %d/%d/%d\n",pes.dia,pes.mes,pes.ano);
 			printf("Estado: %s\n",pes.estado_Pessoa);
 			printf("Cidade: %s\n",pes.cidade_Pessoa);
+			printf("ID: %d\n",pes.ID);
 			printf("----------------------------------------------------------------\n\n");
 		}
 	}
@@ -700,10 +727,13 @@ void remove_pessoa(){
 	TEMPORARIO temp;
 
 	bool var;
+	int cont,choice;
+	choice = 0;
+	cont = 0;
 	char nome[MODWORD];
 	
 	alternativo = fopen("alter.txt","a+b");
-	arquivo = fopen("pessoas.txt","rb");
+	arquivo = fopen("pessoas.txt","r+b");
 	if(arquivo == NULL){
 		cabecalho();
 		printf("Erro ao abrir o arquivo!\n");
@@ -716,7 +746,64 @@ void remove_pessoa(){
 		fgets(nome,sizeof(nome),stdin);
 		nome[strlen(nome)-1]=nome[strlen(nome)];
 		converte_Maiusc(nome);
+		
+		while( fread(&pes, sizeof(PESSOA), 1, arquivo) == 1){
+			if(strcmp(pes.nome_Pessoa,nome) == 0){
+				cont++;
+
+			}
+		}
+		
+		rewind(arquivo);
+		
+		if(cont > 1){
+			while( fread(&pes, sizeof(PESSOA), 1, arquivo) == 1){
+				if(strcmp(pes.nome_Pessoa,nome) == 0){
+					printf("Nome: %s\n",pes.nome_Pessoa);
+					printf("Sexo: %s\n",pes.sexo_Pessoa);
+					printf("Data de nascimento: %d/%d/%d\n",pes.dia,pes.mes,pes.ano);
+					printf("Estado: %s\n",pes.estado_Pessoa);
+					printf("Cidade: %s\n",pes.cidade_Pessoa);
+					printf("ID: %d\n",pes.ID);
+				}
+			}	
+		
+					printf("Foram detectados nomes iguais, por favor, digite o ID da pessoa a ser deletada: ");
+					scanf("%d",&choice);
+					rewind(arquivo);
+					
+		while( fread(&pes, sizeof(PESSOA), 1, arquivo) == 1){
+			if(pes.ID != choice){
+				strcpy(temp.nome_Pessoa,pes.nome_Pessoa);
+				strcpy(temp.sexo_Pessoa,pes.sexo_Pessoa);
+				strcpy(temp.cidade_Pessoa,pes.cidade_Pessoa);	
+				strcpy(temp.estado_Pessoa,pes.estado_Pessoa);
+				temp.ano = pes.ano;
+				temp.mes = pes.mes;
+				temp.dia = pes.dia;
+				temp.ID = pes.ID;
+				fwrite(&temp, sizeof(TEMPORARIO), 1, alternativo);				
+			}	
+		}	
+		
+		fclose(arquivo);
+		fclose(alternativo);
+		remove("pessoas.txt");
+		rename("alter.txt","pessoas.txt");
+		printf("Processando dados, um momento...\n");
+		sleep(2);
+		printf("Deseja tentar outra exclusão? S\\N ");
+		fflush(stdin);
+	if(getchar() == 's'){
+		getchar();
+		remove_pessoa();
+	}else{
+		main();
+	}
 	
+}
+		rewind(arquivo);
+		
 		while( fread(&pes, sizeof(PESSOA), 1, arquivo) == 1){
 			if(strcmp(pes.nome_Pessoa,nome) != 0){
 				strcpy(temp.nome_Pessoa,pes.nome_Pessoa);
@@ -726,6 +813,7 @@ void remove_pessoa(){
 				temp.ano = pes.ano;
 				temp.mes = pes.mes;
 				temp.dia = pes.dia;
+				temp.ID = pes.ID;
 				fwrite(&temp, sizeof(TEMPORARIO), 1, alternativo);
 			}
 		}
@@ -737,7 +825,7 @@ void remove_pessoa(){
 		rename("alter.txt","pessoas.txt");
 		printf("Processando dados, um momento...\n");
 		sleep(2);
-		printf("Deseja tentar outra exclusão? S\\N");
+		printf("Deseja tentar outra exclusão? S\\N ");
 	if(getchar() == 's'){
 		getchar();
 		remove_pessoa();
