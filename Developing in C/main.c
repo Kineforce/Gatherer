@@ -1,12 +1,14 @@
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 // Nome do programa: Gatherer
-// Nome do responsÃ¡vel: Lucas Souza Martins
+// Nome do responsável: Lucas Souza Martins
 // Entrada: Estado, cidade, sexo, nome e data de nascimento.
-// SaÃ­da: RelatÃ³rio demogrÃ¡fico, listaÃ§Ã£o de pessoas por estado ou cidade, listaÃ§Ã£o de pessoas por nome ou parte do nome, exclusÃ£o de pessoas.
-// Objetivo: Solicita os dados de uma pessoa: Estado, cidade, sexo, nome e data de nascimento. Estes dados serÃ£o armazenados em um arquivo.txt e tambÃ©m serÃ¡ possÃ­vel
-// por uma funÃ§Ã£o no menu, requisitar um relatÃ³rio demogrÃ¡fico das pessoas cadastradas.
-// Projeto criado para obtenÃ§Ã£o de nota na disciplina e experiÃªncia em algoritmos na Universidade de BrasÃ­lia(UnB).
+// SaÃ­da: Relatório demográfico, listação de pessoas por estado ou cidade, listação de pessoas por nome ou parte do nome, exclusÃ£o de pessoas.
+// Objetivo: Solicita os dados de uma pessoa: Estado, cidade, sexo, nome e data de nascimento. Estes dados serão armazenados em um arquivo.txt e também será possÃ­vel
+// por uma função no menu, requisitar um relatório demográfico das pessoas cadastradas.
+// Projeto criado para obtenção de nota na disciplina e experiÃªncia em algoritmos na Universidade de BrasÃ­lia(UnB).
+// Algumas das funções utilizadas neste programa tem como inspiração funções já criadas por usuários em diversos fóruns internacionais e nacionais, meus sinceros obrigado por 
+// contribuírem para o meu aprendizado e realização deste programa.
 
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
@@ -27,10 +29,10 @@
 
 #include <time.h>
 
-// Define para as variÃ¡veis
+// Define para as variáveis
 #define MODWORD 500
 
-// DeclaraÃ§Ã£o de funÃ§Ãµes
+// Declaração de funções
 void cabecalho();
 void cadastra_Estado();
 void listar();
@@ -55,7 +57,7 @@ int busca_nome(char string[], char substring[]);
 
 // Estruturas
 
-// Esta struct auxiliarÃ¡ na funÃ§Ã£o de excluir pessoas cadastradas
+// Esta struct auxiliará na função de excluir pessoas cadastradas
 typedef struct temporario TEMPORARIO;
 struct temporario {
   char nome_Pessoa[MODWORD];
@@ -68,7 +70,7 @@ struct temporario {
   int ID;
 };
 
-// Esta struct armazenarÃ¡ todos os dados de cada pessoa registrada
+// Esta struct armazenará todos os dados de cada pessoa registrada
 typedef struct pessoa PESSOA;
 struct pessoa {
   char nome_Pessoa[MODWORD];
@@ -81,26 +83,26 @@ struct pessoa {
   int ID;
 
 };
-// Esta struct armazenarÃ¡ todas as cidades e respectivos estados
+// Esta struct armazenará todas as cidades e respectivos estados
 typedef struct cidade CIDADE;
 struct cidade {
   char nome_Cidade[MODWORD];
 };
-// Esta struct armazenarÃ¡ todos os estados
+// Esta struct armazenará todos os estados
 typedef struct estado ESTADO;
 struct estado {
   char nome_Estado[MODWORD];
   CIDADE ref_Cidade;
 };
 
-// FunÃ§Ã£o principal
+// Função principal
 int main() {
   setlocale(LC_ALL, "Portuguese");
 
   int escolha_Menu;
   fflush(stdin);
 
-  system("clear");
+  system("cls");
 
   printf("-----------------------------------------------------------------------");
   printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
@@ -115,14 +117,15 @@ int main() {
   printf("\n---- 4 - Listar pessoas por Estado ------------------------------------");
   printf("\n---- 5 - Listar pessoas por Cidade ------------------------------------");
   printf("\n---- 6 - Consultar pessoa por Nome ------------------------------------");
-  printf("\n---- 7 - Gerar relatÃ³rio demogrÃ¡fico ----------------------------------");
-  printf("\n---- 8 - Finalizar Programa -------------------------------------------");
-  printf("\n---- 9 - Excluir Pessoa -----------------------------------------------");
+  printf("\n---- 7 - Gerar relatório demográfico ----------------------------------");
+  printf("\n---- 8 - Excluir Pessoa -----------------------------------------------");
+  printf("\n---- 9 - Finalizar Programa -------------------------------------------");
+
   printf("\n-----------------------------------------------------------------------\n");
 
   scanf("%d", & escolha_Menu);
   getchar();
-  // Switch para escolher as opÃ§Ãµes do MENU
+  // Switch para escolher as opções do MENU
 
   switch (escolha_Menu) {
   case 1:
@@ -153,12 +156,12 @@ int main() {
     relatorio_demografico();
     break;
 
-  case 9:
+  case 8:
     remove_pessoa();
     break;
 
-  case 8:
-    system("clear");
+  case 9:
+    system("cls");
     printf("-----------------------------------------------------------------------");
     printf("\n-----------------------------------------------------------------------");
     printf("\n--------------P R O G R A M A  F I N A L I Z A D O --------------------");
@@ -168,25 +171,25 @@ int main() {
     break;
 
   default:
-    system("clear");
+    system("cls");
     printf("-----------------------------------------------------------------------");
     printf("\n-----------------------------------------------------------------------");
     printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
     printf("\n-----------------------------------------------------------------------");
     printf("\n-----------------------------------------------------------------------\n\n");
-    printf("\n----OpcÃ£o InvÃ¡lida! Para retornar ao menu, pressionte Enter...\n");
+    printf("\n----Opcão Inválida! Para retornar ao menu, pressionte Enter...\n");
     system("pause");
     main();
     break;
   }
 }
 
-// FunÃ§Ãµes do menu
+// Funções do menu
 
-// Esta funÃ§Ã£o Ã© responsÃ¡vel por chamar um cabeÃ§alho, deixarÃ¡ o cÃ³digo em funcionamento mais "limpo" e de melhor entendimento.
+// Esta função é responsável por chamar um cabeçalho, deixará o código em funcionamento mais "limpo" e de melhor entendimento.
 void cabecalho() {
 
-  system("clear");
+  system("cls");
   printf("-----------------------------------------------------------------------");
   printf("\n-----------------------------------------------------------------------");
   printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
@@ -194,7 +197,7 @@ void cabecalho() {
   printf("\n-----------------------------------------------------------------------\n\n");
 }
 
-// Esta funÃ§Ã£o Ã© responsÃ¡vel por cadastrar os estados, nÃ£o sÃ£o permitidos estados com mesmo nome.
+// Esta função é responsável por cadastrar os estados, não são permitidos estados com mesmo nome.
 void cadastra_Estado() {
   setlocale(LC_ALL, "Portuguese");
 
@@ -202,7 +205,7 @@ void cadastra_Estado() {
   ESTADO est;
   char escolha[MODWORD];
 
-  // "database.txt" Ã© o nosso arquivo para armazenar estados.		
+  // "database.txt" é o nosso arquivo para armazenar estados.		
   arquivo = fopen("database.txt", "a+b");
 
   if (arquivo == NULL) {
@@ -214,18 +217,18 @@ void cadastra_Estado() {
   printf("Digite o nome do estado: ");
   fgets(est.nome_Estado, sizeof(est.nome_Estado), stdin);
 
-  est.nome_Estado[strlen(est.nome_Estado) - 1] = est.nome_Estado[strlen(est.nome_Estado)]; // Esta linha de cÃ³digo Ã© responsÃ¡vel por remover o /n da string inserida.
-  // Ela Ã© constantemente usada em todo cÃ³digo.
+  est.nome_Estado[strlen(est.nome_Estado) - 1] = est.nome_Estado[strlen(est.nome_Estado)]; // Esta linha de código é responsável por remover o /n da string inserida.
+  // Ela é constantemente usada em todo código.
 
-  // Nestes dois "If's" ele vai escanear o arquivo criado por meio de uma funÃ§Ã£o auxiliar utilizada mais a frente 
-  // e procurar por estados de nomes semelhantes, caso nÃ£o houver, o cadastro Ã© permitido.
+  // Nestes dois "If's" ele vai escanear o arquivo criado por meio de uma função auxiliar utilizada mais a frente 
+  // e procurar por estados de nomes semelhantes, caso não houver, o cadastro é permitido.
   converte_Maiusc(est.nome_Estado);
   if (compara_estado(est.nome_Estado) == 0) {
     printf("Cadastro permitido!\n");
     fwrite( & est, sizeof(ESTADO), 1, arquivo);
   }
   if (compara_estado(est.nome_Estado) == 1) {
-    printf("Cadastro nÃ£o permitido!\n");
+    printf("Cadastro não permitido!\n");
     printf("Continuar cadastrando? S\\N\n");
     fgets(escolha, sizeof(escolha), stdin);
     converte_Maiusc(escolha);
@@ -248,7 +251,7 @@ void cadastra_Estado() {
   fclose(arquivo);
   main();
 }
-// Esta funÃ§Ã£o Ã© responsÃ¡vel por cadastrar as cidades, caso exista seu estado, nÃ£o Ã© permitido o cadastro de duas cidades iguais em um mesmo estado.
+// Esta função é responsável por cadastrar as cidades, caso exista seu estado, não é permitido o cadastro de duas cidades iguais em um mesmo estado.
 void cadastra_Cidade() {
   setlocale(LC_ALL, "Portuguese");
 
@@ -271,7 +274,7 @@ void cadastra_Cidade() {
     fgets(nome, sizeof(nome), stdin);
     nome[strlen(nome) - 1] = nome[strlen(nome)];
     converte_Maiusc(nome);
-    // Aqui ele vai chamar a funÃ§Ã£o auxiliar "cadastra_Cid" caso ele encontre no estado no arquivo "database.txt" (que no caso Ã© onde foram armazenados os estados) 
+    // Aqui ele vai chamar a função auxiliar "cadastra_Cid" caso ele encontre no estado no arquivo "database.txt" (que no caso é onde foram armazenados os estados) 
     // o estado inserido.
     while (fread( & est, sizeof(ESTADO), 1, arquivo) == 1) {
       if (strcmp(nome, est.nome_Estado) == 0) {
@@ -290,7 +293,7 @@ void cadastra_Cidade() {
     main();
   }
 }
-// Esta funÃ§Ã£o Ã© auxiliar da funÃ§Ã£o "cadastra_Cidade" e Ã© responsÃ¡vel por fazer uma comparaÃ§Ã£o para verificar se o estado da cidade inserida Ã© existente.
+// Esta função é auxiliar da função "cadastra_Cidade" e é responsável por fazer uma comparação para verificar se o estado da cidade inserida é existente.
 void cadastra_Cid(char n_estado[]) {
   setlocale(LC_ALL, "Portuguese");
 
@@ -301,7 +304,7 @@ void cadastra_Cid(char n_estado[]) {
   char n_Estado[MODWORD];
   char n_Cidade[MODWORD];
 
-  // "cidade.txt"	Ã© o nosso arquivo para armzenar estado e cidade concatenados.
+  // "cidade.txt"	é o nosso arquivo para armzenar estado e cidade concatenados.
   arquivo = fopen("cidade.txt", "ab");
 
   if (arquivo == NULL) {
@@ -323,7 +326,7 @@ void cadastra_Cid(char n_estado[]) {
     fwrite( & est, sizeof(ESTADO), 1, arquivo);
   }
   if (compara_cidade(est.nome_Estado) == 1) {
-    printf("Cadastro nÃ£o permitido!\n");
+    printf("Cadastro não permitido!\n");
     printf("Continuar cadastrando? S\\N\n");
     fgets(escolha, sizeof(escolha), stdin);
     escolha[strlen(escolha) - 1] = escolha[strlen(escolha)];
@@ -350,15 +353,15 @@ void cadastra_Cid(char n_estado[]) {
   main();
 
 }
-// Esta funÃ§Ã£o Ã© responsÃ¡vel por cadastrar as pessoas e seus dados, ela irÃ¡ verfificar se o estado e cidade em que se localiza a pessoa existem e sÃ£o validados.
-// Suas funÃ§Ãµes auxiliares para ajudar nesta validaÃ§Ã£o de estado e cidade estÃ£o a seguir.
+// Esta função é responsável por cadastrar as pessoas e seus dados, ela irá verfificar se o estado e cidade em que se localiza a pessoa existem e são validados.
+// Suas funções auxiliares para ajudar nesta validação de estado e cidade estão a seguir.
 void cadastra_Pessoa() {
 
   setlocale(LC_ALL, "Portuguese");
 
   FILE * arquivo;
   PESSOA pes;
-  //"pessoas.txt" Ã© o nosso arquivo para armazenar todas as informaÃ§Ãµes que serÃ£o obtidas de cada pessoa, incluindo estado e cidade.
+  //"pessoas.txt" é o nosso arquivo para armazenar todas as informações que serão obtidas de cada pessoa, incluindo estado e cidade.
   arquivo = fopen("pessoas.txt", "ab");
 
   char escolha[MODWORD];
@@ -383,8 +386,8 @@ void cadastra_Pessoa() {
     strcat(estate, city);
     converte_Maiusc(estate);
 
-    // A partir daqui, esta funÃ§Ã£o irÃ¡ realizar comparaÃ§Ãµes e verificaÃ§Ãµes para validaÃ§Ã£o de estado, cidade, sexo e data de nascimento.
-    // Caso a funÃ§Ã£o "compara_estcid_Cadastra" retorne 1, os dados de cidade e estado estÃ£o vÃ¡lidos.
+    // A partir daqui, esta função irá realizar comparações e verificações para validação de estado, cidade, sexo e data de nascimento.
+    // Caso a função "compara_estcid_Cadastra" retorne 1, os dados de cidade e estado estão válidos.
     if (compara_estcid_Cadastra(estate) == 1) {
       cabecalho();
 
@@ -403,10 +406,10 @@ void cadastra_Pessoa() {
 
       char m[2] = "M";
       char f[2] = "F";
-      // ValidaÃ§Ã£o de sexo.
+      // Validação de sexo.
       if (strcmp(pes.sexo_Pessoa,m) != 0 && strcmp(pes.sexo_Pessoa,f) != 0) {
 
-        printf("ValidacÃ£o de sexo nÃ£o confirmada!\n");
+        printf("Validacão de sexo não confirmada!\n");
         printf("Deseja tentar outro cadastro? S\\N ");
         fgets(escolha, sizeof(escolha), stdin);
         escolha[strlen(escolha) - 1] = escolha[strlen(escolha)];
@@ -419,16 +422,18 @@ void cadastra_Pessoa() {
         }
       }
 
-      // ValidaÃ§Ã£o de data de nascimento com ajuda da funÃ§Ã£o "valida_Data".
+      // Validação de data de nascimento com ajuda da função "valida_Data".
       printf("Entre a data de nascimento no formato: (DD/MM/AAAA) \n");
       scanf("%d/%d/%d", & pes.dia, & pes.mes, & pes.ano);
+	  fflush(stdin);
       if (valida_Data(pes.dia, pes.mes, pes.ano) == 1) {
-        printf("ValidaÃ§Ã£o de data nÃ£o confirmada!\n");
+        printf("Validação de data não confirmada!\n");
+        fflush(stdin);
         printf("Deseja tentar outro cadastro? S\\N ");
         fgets(escolha, sizeof(escolha), stdin);
         escolha[strlen(escolha) - 1] = escolha[strlen(escolha)];
         converte_Maiusc(escolha);
-        if (*escolha == 's') {
+        if (*escolha == 'S') {
           fclose(arquivo);
           cadastra_Pessoa();
         } else {
@@ -436,14 +441,13 @@ void cadastra_Pessoa() {
         }
       }
 
-      // Esta funÃ§Ã£o "gera_id" irÃ¡ sempre adicionar +1 para cada pessoa cadastrada, auxiliando na funÃ§Ã£o de remover pessoa cadastrada.	
+      // Esta função "gera_id" irá sempre adicionar +1 para cada pessoa cadastrada, auxiliando na função de remover pessoa cadastrada.	
       pes.ID = gera_id();
-
+	
       fwrite( & pes, sizeof(PESSOA), 1, arquivo);
       printf("Cadastro realizado com sucesso!\n");
-      getchar();
     } else {
-      printf("Erro, estado ou cidade nÃ£o encontrados!\n");
+      printf("Erro, estado ou cidade não encontrados!\n");
     }
   }
 
@@ -459,13 +463,13 @@ void cadastra_Pessoa() {
   fclose(arquivo);
   main();
 }
-// FunÃ§Ã£o auxiliar na funÃ§Ã£o "remove_pessoa"
-// ResponsÃ¡vel por adicionar uma "ID" para cada pessoa cadastrada.
+// Função auxiliar na função "remove_pessoa"
+// Responsável por adicionar uma "ID" para cada pessoa cadastrada.
 int gera_id() {
   int
   var;
 
-  //"id.txt" Ã© o nosso arquivo para armazenar uma ID que serÃ¡ sempre adicionar +1 para cada pessoa cadastrada.
+  //"id.txt" é o nosso arquivo para armazenar uma ID que será sempre adicionar +1 para cada pessoa cadastrada.
   FILE * fp = fopen("id.txt", "r");
   if (!fp) {
     fp = fopen("id.txt", "w");
@@ -486,7 +490,7 @@ int gera_id() {
   return var;
 }
 
-// FunÃ§Ã£o auxiliar da funÃ§Ã£o "cadastra_Pessoa", validaÃ§Ã£o de data de nascimento.
+// Função auxiliar da função "cadastra_Pessoa", validação de data de nascimento.
 int valida_Data(int dd, int mm, int yy) {
   if (yy >= 1900 && yy <= 9999) {
     if (mm >= 1 && mm <= 12) {
@@ -510,7 +514,7 @@ int valida_Data(int dd, int mm, int yy) {
   return 0;
 }
 
-// FunÃ§Ã£o auxiliar da funÃ§Ã£o "cadastra_Pessoa", validaÃ§Ã£o de estado e cidade.
+// Função auxiliar da função "cadastra_Pessoa", validação de estado e cidade.
 int compara_estcid_Cadastra(char estcid[]) {
   FILE * arquivo;
   ESTADO est;
@@ -535,7 +539,7 @@ int compara_estcid_Cadastra(char estcid[]) {
   return val;
 }
 
-// FunÃ§Ã£o responsÃ¡vel por pesquisar pessoas cadastradas a partir do nome ou parte de um nome.
+// Função responsável por pesquisar pessoas cadastradas a partir do nome ou parte de um nome.
 void pesquisa_Pessoa() {
   setlocale(LC_ALL, "Portuguese");
 
@@ -580,7 +584,7 @@ void pesquisa_Pessoa() {
     }
   }
 }
-// FunÃ§Ã£o responsÃ¡vel por listar pessoas por nome do estado.
+// Função responsável por listar pessoas por nome do estado.
 void lista_pessoas_estado() {
   setlocale(LC_ALL, "Portuguese");
 
@@ -618,9 +622,8 @@ void lista_pessoas_estado() {
       fgets(escolha, sizeof(escolha), stdin);
       escolha[strlen(escolha) - 1] = escolha[strlen(escolha)];
       converte_Maiusc(escolha);
-    if (*escolha == 's') {
+    if (*escolha == 'S') {
       fclose(arquivo);
-      getchar();
       lista_pessoas_estado();
     } else {
       fclose(arquivo);
@@ -628,7 +631,7 @@ void lista_pessoas_estado() {
     }
   }
 }
-// FunÃ§Ã£o responsÃ¡vel por listar pessoar por nome da cidade.
+// Função responsável por listar pessoar por nome da cidade.
 void lista_pessoas_cidade() {
   setlocale(LC_ALL, "Portuguese");
 
@@ -664,7 +667,7 @@ void lista_pessoas_cidade() {
           fgets(escolha, sizeof(escolha), stdin);
       escolha[strlen(escolha) - 1] = escolha[strlen(escolha)];
       converte_Maiusc(escolha);
-    if (*escolha == 's') {
+    if (*escolha == 'S') {
       fclose(arquivo);
       lista_pessoas_cidade();
     } else {
@@ -673,7 +676,7 @@ void lista_pessoas_cidade() {
     }
   }
 }
-// FunÃ§Ã£o responsÃ¡vel por converter toda string inserida no decorrer do programa em caracteres maiÃºsculos e removendo os espaÃ§os iniciais e finais.
+// Função responsável por converter toda string inserida no decorrer do programa em caracteres maiúsculos e removendo os espaços iniciais e finais.
 void converte_Maiusc(char nome[]) {
 
   int i, TamStr;
@@ -694,7 +697,7 @@ void converte_Maiusc(char nome[]) {
   }
 
 }
-// FunÃ§Ã£o auxiliar da funÃ§Ã£o "pesquisa_Pessoa", aqui ela irÃ¡ retornar a pessoa por nome ou parte do nome.
+// Função auxiliar da função "pesquisa_Pessoa", aqui ela irá retornar a pessoa por nome ou parte do nome.
 int busca_nome(char string[], char substring[]) {
 
   int l1, l2, i, max;
@@ -713,7 +716,7 @@ int busca_nome(char string[], char substring[]) {
     return 0;
   }
 }
-// FunÃ§Ã£o responsÃ¡vel para remover pessoas cadastras e seus respectivos dados.
+// Função responsável para remover pessoas cadastras e seus respectivos dados.
 void remove_pessoa() {
   FILE * arquivo, * alternativo;
   PESSOA pes;
@@ -725,9 +728,9 @@ void remove_pessoa() {
   char nome[MODWORD];
   char escolha[MODWORD];
 
-  // "alter.txt" Ã© o nosso arquivo 'temporÃ¡rio' que servirÃ¡ para auxÃ­lio na hora de excluir uma pessoa
-  // ele irÃ¡ receber todas as pessoas com o nome diferente do inserido, depois o arquivo "pessoas.txt" serÃ¡ deletado
-  // e por fim, "alter.txt" serÃ¡ renomeado para "pessoas.txt".
+  // "alter.txt" é o nosso arquivo 'temporário' que servirá para auxiliar na hora de excluir uma pessoa
+  // ele irá receber todas as pessoas com o nome diferente do inserido, depois o arquivo "pessoas.txt" será deletado
+  // e por fim, "alter.txt" será renomeado para "pessoas.txt".
 
   alternativo = fopen("alter.txt", "a+b");
   arquivo = fopen("pessoas.txt", "r+b");
@@ -767,7 +770,7 @@ void remove_pessoa() {
 
       printf("Foram detectados nomes iguais, por favor, digite o ID da pessoa a ser deletada: ");
       scanf("%d", &choice);
-      getchar();
+      fflush(stdin);
       rewind(arquivo);
 
       while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) {
@@ -790,12 +793,12 @@ void remove_pessoa() {
       rename("alter.txt", "pessoas.txt");
       printf("Processando dados, um momento...\n");
       sleep(2);
-      printf("Deseja tentar outra exclusÃ£o? S\\N ");
+      printf("Deseja tentar outra exclusão? S\\N ");
             fgets(escolha, sizeof(escolha), stdin);
       escolha[strlen(escolha) - 1] = escolha[strlen(escolha)];
       converte_Maiusc(escolha);
       if (*escolha == 'S') {
-        getchar();
+      	fflush(stdin);
         remove_pessoa();
       } else {
         main();
@@ -825,7 +828,7 @@ void remove_pessoa() {
   rename("alter.txt", "pessoas.txt");
   printf("Processando dados, um momento...\n");
   sleep(2);
-  printf("Deseja tentar outra exclusÃ£o? S\\N ");
+  printf("Deseja tentar outra exclusão? S\\N ");
         fgets(escolha, sizeof(escolha), stdin);
       escolha[strlen(escolha) - 1] = escolha[strlen(escolha)];
       converte_Maiusc(escolha);
@@ -836,7 +839,7 @@ void remove_pessoa() {
   }
 }
 
-// FunÃ§Ã£o responsÃ¡vel por exibir o relatÃ³rio demogrÃ¡fico de todas as pessoas cadastradas.
+// Função responsável por exibir o relatório demográfico de todas as pessoas cadastradas.
 void relatorio_demografico() {
   setlocale(LC_ALL, "Portuguese");
 
@@ -846,7 +849,8 @@ void relatorio_demografico() {
   float vinteum_quaren = 0; 
   float quarum_sess = 0;
   float acimasess = 0;
-
+  
+  char m[2] = "S";
   char escolha[MODWORD];
   float masc, fem;
   int cont;
@@ -856,12 +860,12 @@ void relatorio_demografico() {
 
   cabecalho();
   fflush(stdin);
-  printf("Para obter o relatÃ³rio demogrÃ¡fico de uma certa regiÃ£o, digite 'S', caso nÃ£o, aperte Enter: ");
-        fgets(escolha, sizeof(escolha), stdin);
+  printf("Para obter o relatório demográfico de uma certa região, digite 'S', caso não, aperte Enter: ");
+    fgets(escolha, sizeof(escolha), stdin);
       escolha[strlen(escolha) - 1] = escolha[strlen(escolha)];
       converte_Maiusc(escolha);
 
-  if(*escolha == 'S'){
+  if(strcmp(escolha,m) == 0){
     relatorio_demografico_estado();
   }
 
@@ -911,9 +915,9 @@ void relatorio_demografico() {
       cont++;
     }
 
-    // Caso nÃ£o sejam encontradas pessoas cadastradas, aqui ele vai mostrar apenas o contador zerado.
+    // Caso não sejam encontradas pessoas cadastradas, aqui ele vai mostrar apenas o contador zerado.
     if(cont == 0){
-    printf("Relatorio demogrÃ¡fico gerado com sucesso!!\n\n");
+    printf("Relatorio demográfico gerado com sucesso!!\n\n");
     printf("Pessoas com idade entre 0 a 5: %.0f %%\n", (zero_cinco ) * 100);
     printf("Pessoas com idade entre 6 a 10: %.0f %%\n", (seis_dez ) * 100);
     printf("Pessoas com idade entre 11 a 20: %.0f %%\n", (onze_vinte ) * 100);
@@ -926,9 +930,9 @@ void relatorio_demografico() {
     getchar();
     fclose(arquivo);
     main();
-    // Caso sejam encontradas pessoas cadastradas, aqui ele vai mostrar o resultado definitivo do relatÃ³rio.
+    // Caso sejam encontradas pessoas cadastradas, aqui ele vai mostrar o resultado definitivo do relatório.
     }
-    printf("Relatorio demogrÃ¡fico gerado com sucesso!!\n\n");
+    printf("Relatorio demográfico gerado com sucesso!!\n\n");
     printf("Pessoas com idade entre 0 a 5: %.0f %%\n", (zero_cinco / cont) * 100);
     printf("Pessoas com idade entre 6 a 10: %.0f %%\n", (seis_dez / cont) * 100);
     printf("Pessoas com idade entre 11 a 20: %.0f %%\n", (onze_vinte / cont) * 100);
@@ -945,7 +949,7 @@ void relatorio_demografico() {
   }
 }
 
-// FunÃ§Ã£o responsÃ¡vel por listar o relatÃ³rio demogrÃ¡fico de um determinado estado, similar a funÃ§Ã£o 'relatorio_demografico'.
+// Função responsável por listar o relatório demográfico de um determinado estado, similar a função 'relatorio_demografico'.
 void relatorio_demografico_estado() {
 
   FILE *arquivo;
@@ -979,7 +983,7 @@ void relatorio_demografico_estado() {
     main();
   }else{
   cabecalho();
-  printf("Digite o nome do estado para ser gerado o relatÃ³rio demogrÃ¡fico: ");
+  printf("Digite o nome do estado para ser gerado o relatório demográfico: ");
   fgets(nome_estado, sizeof(nome_estado), stdin);
   nome_estado[strlen(nome_estado) - 1] = nome_estado[strlen(nome_estado)];
   converte_Maiusc(nome_estado);
@@ -1014,9 +1018,9 @@ void relatorio_demografico_estado() {
       cont++;
     }
   }
-  // Caso nÃ£o sejam encontradas pessoas cadastradas, aqui ele vai mostrar apenas o contador zerado.
+  // Caso não sejam encontradas pessoas cadastradas, aqui ele vai mostrar apenas o contador zerado.
     if(cont == 0){
-    printf("Relatorio demogrÃ¡fico gerado com sucesso!!\n\n");
+    printf("Relatorio demográfico gerado com sucesso!!\n\n");
     printf("Pessoas com idade entre 0 a 5: %.0f %%\n", (zero_cinco ) * 100);
     printf("Pessoas com idade entre 6 a 10: %.0f %%\n", (seis_dez ) * 100);
     printf("Pessoas com idade entre 11 a 20: %.0f %%\n", (onze_vinte ) * 100);
@@ -1025,13 +1029,13 @@ void relatorio_demografico_estado() {
     printf("Pessoas com idade superior a 60: %.0f %%\n\n", (acimasess ) * 100);
     printf("Pessoas com o sexo 'F': %.0f %%\n", (fem ) * 100);
     printf("Pessoas com o sexo 'M': %.0f %%\n\n", (masc ) * 100);
-    printf("Pressione enter para voltar ao menu!\n");
+    printf("\nPressione enter para voltar ao menu!\n");
     getchar();
     fclose(arquivo);
     main();
-    // Caso sejam encontradas pessoas cadastradas, aqui ele vai mostrar o resultado definitivo do relatÃ³rio.
+    // Caso sejam encontradas pessoas cadastradas, aqui ele vai mostrar o resultado definitivo do relatório.
     }
-    printf("Relatorio demogrÃ¡fico gerado com sucesso!!\n\n");
+    printf("Relatorio demográfico gerado com sucesso!!\n\n");
     printf("Pessoas com idade entre 0 a 5: %.0f %%\n", (zero_cinco / cont) * 100);
     printf("Pessoas com idade entre 6 a 10: %.0f %%\n", (seis_dez / cont) * 100);
     printf("Pessoas com idade entre 11 a 20: %.0f %%\n", (onze_vinte / cont) * 100);
@@ -1040,13 +1044,13 @@ void relatorio_demografico_estado() {
     printf("Pessoas com idade superior a 60: %.0f %%\n\n", (acimasess / cont) * 100);
     printf("Pessoas com o sexo 'F': %.0f %%\n", (fem / cont) * 100);
     printf("Pessoas com o sexo 'M': %.0f %%\n\n", (masc / cont) * 100);
-    printf("Pressione enter para voltar ao menu!\n");
+    printf("\nPressione enter para voltar ao menu!\n");
     getchar();
     fclose(arquivo);
     main();
 }
 }
-// FunÃ§Ã£o responsÃ¡vel por verificar se o estado cadastrado na funÃ§Ã£o "cadastra_estado" jÃ¡ Ã© existente.
+// Função responsável por verificar se o estado cadastrado na função "cadastra_estado" já é existente.
 int compara_estado(char nome[]) {
   FILE * arquivo;
   arquivo = fopen("database.txt", "rb");
@@ -1074,7 +1078,7 @@ int compara_estado(char nome[]) {
 
   return resultado;
 }
-// FunÃ§Ã£o responsÃ¡vel pro verificar se a cidade cadastrada na funÃ§Ã£o "cadastra_Cid" jÃ¡ Ã© existente.
+// Função responsável pro verificar se a cidade cadastrada na função "cadastra_Cid" já é existente.
 int compara_cidade(char nome[]) {
   FILE * arquivo;
   arquivo = fopen("cidade.txt", "rb");
