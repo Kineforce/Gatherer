@@ -58,7 +58,7 @@ int busca_nome(char string[], char substring[]);
 // Estruturas
 
 // Esta struct auxiliará na função de excluir pessoas cadastradas
-typedef struct temporario TEMPORARIO;
+typedef struct temporario TEMPORARIO; // Usando typedef para consegui utilizar uma futura variável da struct ao longo do código.
 struct temporario {
   char nome_Pessoa[MODWORD];
   char sexo_Pessoa[MODWORD];
@@ -92,7 +92,7 @@ struct cidade {
 typedef struct estado ESTADO;
 struct estado {
   char nome_Estado[MODWORD];
-  CIDADE ref_Cidade;
+  CIDADE ref_Cidade;         // Struct cidade dentro da struct estado.
 };
 
 // Função principal
@@ -503,15 +503,15 @@ int valida_Data(int dd, int mm, int yy) {
   struct tm tm = * localtime( & data);
   int ano_atual = tm.tm_year + 1900;
 
-  if (yy >= 1900 && yy <= ano_atual) {
-    if (mm >= 1 && mm <= 12) {
-      if ((dd >= 1 && dd <= 31) && (mm == 1 || mm == 3 || mm == 5 || mm == 7 || mm == 8 || mm == 10 || mm == 12))
+  if (yy >= 1900 && yy <= ano_atual) { // Ano tem que estar entre 1900 e 2019
+    if (mm >= 1 && mm <= 12) { //Verificando se o mês está entre os 12 mêses existentes
+      if ((dd >= 1 && dd <= 31) && (mm == 1 || mm == 3 || mm == 5 || mm == 7 || mm == 8 || mm == 10 || mm == 12)) // Caso de mês com 31 dias
         return 0;
-      else if ((dd >= 1 && dd <= 30) && (mm == 4 || mm == 6 || mm == 9 || mm == 11))
+      else if ((dd >= 1 && dd <= 30) && (mm == 4 || mm == 6 || mm == 9 || mm == 11)) // Caso mês com apenas 30 dias
+      return 0;
+      else if ((dd >= 1 && dd <= 28) && (mm == 2)) //Caso mês com apenas 28 dias
         return 0;
-      else if ((dd >= 1 && dd <= 28) && (mm == 2))
-        return 0;
-      else if (dd == 29 && mm == 2 && (yy % 400 == 0 || (yy % 4 == 0 && yy % 100 != 0)))
+      else if (dd == 29 && mm == 2 && (yy % 400 == 0 || (yy % 4 == 0 && yy % 100 != 0))) //Verificando ano bissexto
         return 0;
       else
         return 1;
@@ -539,7 +539,7 @@ int compara_estcid_Cadastra(char estcid[]) {
   } else {
     cabecalho();
 
-    while (fread( & est, sizeof(ESTADO), 1, arquivo) == 1) {
+    while (fread( & est, sizeof(ESTADO), 1, arquivo) == 1) { // Lendo arquivo e comparando se estado/cidade existem para cadastro de pessoa.
       if (strcmp(estcid, est.nome_Estado) == 0) {
         val = 1;
       }
@@ -573,8 +573,8 @@ void pesquisa_Pessoa() {
     fgets(nome, sizeof(nome), stdin);
     nome[strlen(nome) - 1] = nome[strlen(nome)];
     converte_Maiusc(nome);
-    while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) {
-      if (busca_nome(pes.nome_Pessoa, nome) == 1) {
+    while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) { // Lendo arquivo PESSOA.
+      if (busca_nome(pes.nome_Pessoa, nome) == 1) { // Função responsável pelo algoritmo de busca de parte de string em uma string.
         printf("Nome: %s\n", pes.nome_Pessoa);
         printf("Sexo: %s\n", pes.sexo_Pessoa);
         printf("Data de nascimento: %d/%d/%d\n", pes.dia, pes.mes, pes.ano);
@@ -622,8 +622,8 @@ void lista_pessoas_estado() {
     nome[strlen(nome) - 1] = nome[strlen(nome)];
     converte_Maiusc(nome);
 
-    while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) {
-      if (strcmp(nome, pes.estado_Pessoa) == 0) {
+    while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) { //Lendo arquivo.
+      if (strcmp(nome, pes.estado_Pessoa) == 0) { //Strcmp para verificar se estado existe.
         validacao++;
         printf("Nome: %s\n", pes.nome_Pessoa);
         printf("Sexo: %s\n", pes.sexo_Pessoa);
@@ -676,8 +676,8 @@ void lista_pessoas_cidade() {
     printf("Digite o nome da cidade a ser escaneado: ");
     fgets(nome, sizeof(nome), stdin);
     converte_Maiusc(nome);
-    while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) {
-      if (strcmp(nome, pes.cidade_Pessoa) == 0) {
+    while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) { // Abrindo arquivo.
+      if (strcmp(nome, pes.cidade_Pessoa) == 0) { // Strcmp para verificar se cidade existe.
         printf("Nome: %s\n", pes.nome_Pessoa);
         printf("Sexo: %s\n", pes.sexo_Pessoa);
         printf("Data de nascimento: %d/%d/%d\n", pes.dia, pes.mes, pes.ano);
@@ -722,7 +722,7 @@ void converte_Maiusc(char nome[]) {
   nome[i - comeco] = '\0';
   TamStr = strlen(nome);
 
-  for (i = 0; i < TamStr; i++) {
+  for (i = 0; i < TamStr; i++) { // Toupper para colocar todos os caracteres em maiúsculo
     nome[i] = toupper(nome[i]);
   }
 
@@ -777,9 +777,9 @@ void remove_pessoa() {
     nome[strlen(nome) - 1] = nome[strlen(nome)];
     converte_Maiusc(nome);
 
-    while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) {
+    while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) { // Lendo o arquivo para verificar se existem nomes iguais ou se existe um nome.
       if (strcmp(pes.nome_Pessoa, nome) == 0) {
-        cont++;
+        cont++; // Contador principal.
 
       }
     }
@@ -804,7 +804,7 @@ void remove_pessoa() {
 
       rewind(arquivo); // Reabrindo arquivo, pois estarei usando novamente outro fread.
 
-      while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) {
+      while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) { // Abrindo novamente o arquivo caso o contador mostre mais de 1 pessoa detectada.
         if (strcmp(pes.nome_Pessoa, nome) == 0) {
           printf("Nome: %s\n", pes.nome_Pessoa);
           printf("Sexo: %s\n", pes.sexo_Pessoa);
@@ -820,7 +820,7 @@ void remove_pessoa() {
       fflush(stdin);
       rewind(arquivo); // Reabrindo arquivo, pois estarei usando novamente outro fread.
 
-      while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) {
+      while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) { // Transmissão de dados para o arquivo alternativo.
         if (pes.ID != choice) {
           strcpy(temp.nome_Pessoa, pes.nome_Pessoa);
           strcpy(temp.sexo_Pessoa, pes.sexo_Pessoa);
@@ -837,7 +837,7 @@ void remove_pessoa() {
       fclose(arquivo);
       fclose(alternativo);
       remove("pessoas.txt");
-      rename("alter.txt", "pessoas.txt");
+      rename("alter.txt", "pessoas.txt"); // Transformando arquivo alternativo em principal.
       printf("Processando dados, um momento...\n");
       sleep(2);
       printf("Deseja tentar outra exclusão? S\\N ");
@@ -855,7 +855,7 @@ void remove_pessoa() {
 
     rewind(arquivo); // Reabrindo arquivo, pois estarei usando novamente outro fread.
 
-    while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) {
+    while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) { // Lendo novamente e passando dados para arquivo alternativo, caso não tenha encontrado nenhuma pessoa, ou mais de duas pessoas.
       if (strcmp(pes.nome_Pessoa, nome) != 0) {
         strcpy(temp.nome_Pessoa, pes.nome_Pessoa);
         strcpy(temp.sexo_Pessoa, pes.sexo_Pessoa);
@@ -872,7 +872,7 @@ void remove_pessoa() {
 
   fclose(arquivo);
   fclose(alternativo);
-  remove("pessoas.txt");
+  remove("pessoas.txt"); // Fechando arquivos.
   rename("alter.txt", "pessoas.txt");
   printf("Processando dados, um momento...\n");
   sleep(2);
@@ -913,11 +913,11 @@ void relatorio_demografico() {
   escolha[strlen(escolha) - 1] = escolha[strlen(escolha)];
   converte_Maiusc(escolha);
 
-  if (strcmp(escolha, m) == 0) {
+  if (strcmp(escolha, m) == 0) { // Chama função relatorio_demografico_estado para calcular o relatório demográfico de um determinado estado, caso digite S.
     relatorio_demografico_estado();
   }
 
-  FILE * arquivo;
+  FILE * arquivo; // Caso o usuário não digite S, ele prossegue para o relatório nacional automaticamente.
   PESSOA pes;
 
   time_t data; // Retornando data atual com a biblioteca time.h.
@@ -1019,7 +1019,7 @@ void relatorio_demografico_estado() {
   masc = 0;
   fem = 0;
   cont = 0;
-  int ano_atual = tm.tm_year + 1900;
+  int ano_atual = tm.tm_year + 1900; // Pegando data atual do computador pela biblioteca time.h
   char nome_estado[MODWORD];
 
   arquivo = fopen("pessoas.txt", "rb");
@@ -1036,7 +1036,7 @@ void relatorio_demografico_estado() {
     nome_estado[strlen(nome_estado) - 1] = nome_estado[strlen(nome_estado)];
     converte_Maiusc(nome_estado);
 
-    while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) {
+    while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) { // Lendo o arquivo PESSOA.
       if (strcmp(pes.estado_Pessoa, nome_estado) == 0) {
         if (ano_atual - pes.ano >= 0 && ano_atual - pes.ano <= 5) {
           zero_cinco++;
@@ -1062,8 +1062,8 @@ void relatorio_demografico_estado() {
         if ('F' == * pes.sexo_Pessoa) {
           fem++;
         }
-        cont++;
-        i++;
+        cont++; // Cont irá determinar se foram encontradas pessoas em um estado ou se não foram encontradas pessoas em um estado, irá influenciar no cálculo do relatório.
+        i++; // I irá determinar se existem pesoas em uma cidade ou não, ou se a cidade existe ou não.
       }
     }
 
@@ -1119,13 +1119,13 @@ int compara_estado(char nome[]) {
     printf("Erro ao abrir o arquivo!\n");
     main();
   } else {
-    while (fread( & est, sizeof(ESTADO), 1, arquivo) == 1) {
+    while (fread( & est, sizeof(ESTADO), 1, arquivo) == 1) { // Lendo o arquivo e fazendo a comparação.
       if (strcmp(est.nome_Estado, nome) == 0) {
         resultado = 1;
       }
 
     }
-    while (fread( & est, sizeof(ESTADO), 1, arquivo) == 1) {
+    while (fread( & est, sizeof(ESTADO), 1, arquivo) == 1) { // Lendo o arquivo e fazendo a comparaçãao.
       if (strcmp(est.nome_Estado, nome) == 1) {
         resultado = 0;
       }
@@ -1147,13 +1147,13 @@ int compara_cidade(char nome[]) {
     printf("Erro ao abrir o arquivo!\n");
     main();
   } else {
-    while (fread( & est, sizeof(ESTADO), 1, arquivo) == 1) {
+    while (fread( & est, sizeof(ESTADO), 1, arquivo) == 1) { // Lendo o arquivo e fazendo a comparação.
       if (strcmp(est.nome_Estado, nome) == 0) {
         resultado = 1;
       }
 
     }
-    while (fread( & est, sizeof(ESTADO), 1, arquivo) == 1) {
+    while (fread( & est, sizeof(ESTADO), 1, arquivo) == 1) { // Lendo o arquivo e fazendo a comparação.
       if (strcmp(est.nome_Estado, nome) == 1) {
         resultado = 0;
       }
