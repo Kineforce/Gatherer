@@ -129,35 +129,35 @@ int main() {
 
   switch (escolha_Menu) {
   case 1:
-    cadastra_Estado();
+    cadastra_Estado();   // Função para cadastrar estados.
     break;
 
   case 2:
-    cadastra_Cidade();
+    cadastra_Cidade();   // Função para cadastrar cidades.
     break;
 
   case 3:
-    cadastra_Pessoa();
+    cadastra_Pessoa();   // Função para cadastrar pessoas.
     break;
 
   case 4:
-    lista_pessoas_estado();
+    lista_pessoas_estado();	 // Função para listar pessoas por estado.
     break;
 
   case 5:
-    lista_pessoas_cidade();
+    lista_pessoas_cidade();  // Função para listar pessoas por cidade.
     break;
 
   case 6:
-    pesquisa_Pessoa();
+    pesquisa_Pessoa();		// Função para listar pessoas por nome ou parte do nome.
     break;
 
   case 7:
-    relatorio_demografico();
+    relatorio_demografico(); 	// Função para gerar o relatório demográfico.
     break;
 
   case 8:
-    remove_pessoa();
+    remove_pessoa();   // Função para excluir pessoas.
     break;
 
   case 9:
@@ -167,6 +167,7 @@ int main() {
     printf("\n--------------P R O G R A M A  F I N A L I Z A D O --------------------");
     printf("\n-----------------------------------------------------------------------");
     printf("\n-----------------------------------------------------------------------\n\n");
+    printf("Go riyo itadaki arigatogozaimasu!");
     exit(0);
     break;
 
@@ -178,7 +179,8 @@ int main() {
     printf("\n-----------------------------------------------------------------------");
     printf("\n-----------------------------------------------------------------------\n\n");
     printf("\n----Opcão Inválida! Para retornar ao menu, pressionte Enter...\n");
-    system("pause");
+    fflush(stdin);
+    getchar();
     main();
     break;
   }
@@ -575,7 +577,8 @@ void pesquisa_Pessoa() {
     converte_Maiusc(nome);
     while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) { // Lendo arquivo PESSOA.
       if (busca_nome(pes.nome_Pessoa, nome) == 1) { // Função responsável pelo algoritmo de busca de parte de string em uma string.
-        printf("Nome: %s\n", pes.nome_Pessoa);
+        validacao = 1;
+		printf("Nome: %s\n", pes.nome_Pessoa);
         printf("Sexo: %s\n", pes.sexo_Pessoa);
         printf("Data de nascimento: %d/%d/%d\n", pes.dia, pes.mes, pes.ano);
         printf("Estado: %s\n", pes.estado_Pessoa);
@@ -583,7 +586,12 @@ void pesquisa_Pessoa() {
         printf("----------------------------------------------------------------\n\n");
       }
     }
-
+    	
+    rewind(arquivo);
+    
+  	if(validacao == 0){
+  		printf("Nenhuma pessoa foi encontrada!\n");
+	  }
     printf("Deseja pesquisar novamente? S\\N ");
     fgets(escolha, sizeof(escolha), stdin);
     escolha[strlen(escolha) - 1] = escolha[strlen(escolha)];
