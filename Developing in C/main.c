@@ -4,10 +4,10 @@
 // Nome do responsável: Lucas Souza Martins
 // Entrada: Estado, cidade, sexo, nome e data de nascimento.
 // Saída: Relatório demográfico, listação de pessoas por estado ou cidade, listação de pessoas por nome ou parte do nome, exclusão de pessoas.
-// Objetivo: Solicita os dados de uma pessoa: Estado, cidade, sexo, nome e data de nascimento. Estes dados serão armazenados em um arquivo.txt e também será possível
+// Objetivo: Solicita os dados de uma pessoa: Estado, cidade, sexo, nome e data de nascimento. Estes dados serão armazenados em 'arquivos.txt' e também será possível
 // por uma função no menu, requisitar um relatório demográfico das pessoas cadastradas.
-// Projeto criado para obtenção de nota na disciplina e experiÃªncia em algoritmos na Universidade de Brasília(UnB).
-// Algumas das funções utilizadas neste programa tem como inspiração funções já criadas por usuários em diversos fóruns internacionais e nacionais, meus sinceros obrigado por 
+// Projeto criado para obtenção de nota na disciplina e experiência em algoritmos na Universidade de Brasília(UnB).
+// Algumas das funções utilizadas neste programa tem como inspiração funções já criadas por usuários em diversos fóruns internacionais e nacionais, meus sinceros agradecimentos por 
 // contribuírem para o meu aprendizado e realização deste programa.
 
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -25,8 +25,6 @@
 
 #include <unistd.h>
 
-#include <stdbool.h>
-
 #include <time.h>
 
 // Define para as variáveis
@@ -35,25 +33,22 @@
 // Declaração de funções
 void cabecalho();
 void cadastra_Estado();
-void listar();
 void cadastra_Cidade();
 void cadastra_Cid(char n_estado[]);
 void cadastra_Pessoa();
+int gera_id();
+int valida_Data(int dd, int mm, int yy);
+int compara_estcid_Cadastra(char estcid[]);
 void pesquisa_Pessoa();
-void lista_pessoas_cidade();
 void lista_pessoas_estado();
+void lista_pessoas_cidade();
 void converte_Maiusc(char nome[]);
+int busca_nome(char string[], char substring[]);
 void remove_pessoa();
-void armazena(char nome_pes[], char sexo_pes[], char est_pes[], char cid_pes[], int ano_pes, int mes_pes, int dia_pes);
 void relatorio_demografico();
 void relatorio_demografico_estado();
-int valida_Data(int dd, int mm, int yy);
-int verifica_deleta(char nome[]);
 int compara_estado(char nome[]);
 int compara_cidade(char nome[]);
-int gera_id();
-int compara_estcid_Cadastra(char estcid[]);
-int busca_nome(char string[], char substring[]);
 
 // Estruturas
 
