@@ -201,12 +201,12 @@ void cabecalho() {
 void cadastra_Estado() {
   setlocale(LC_ALL, "Portuguese");
 
-  FILE * arquivo;				
-  ESTADO est;				// Variável da struct utilizada para armanenar com o fwrite.
+  FILE * arquivo;
+  ESTADO est; // Variável da struct utilizada para armanenar com o fwrite.
   char escolha[MODWORD];
 
   // "database.txt" é o nosso arquivo para armazenar estados.		
-  arquivo = fopen("database.txt", "a+b");  // Abrindo Arquivo.
+  arquivo = fopen("database.txt", "a+b"); // Abrindo Arquivo.
 
   if (arquivo == NULL) {
     cabecalho();
@@ -258,6 +258,7 @@ void cadastra_Cidade() {
   FILE * arquivo;
   ESTADO est;
   char escolha[MODWORD];
+  int validacao = 0;
 
   arquivo = fopen("database.txt", "rb"); // Abrindo arquivo.
 
@@ -271,15 +272,20 @@ void cadastra_Cidade() {
 
     cabecalho();
     printf("Digite o nome do estado da cidade: ");
-    fgets(nome, sizeof(nome), stdin);                 // Estas três linhas de código formatam e preparam a string inserida para ser padrão em todo o código,
-    nome[strlen(nome) - 1] = nome[strlen(nome)];      // este padrão é constantemente utilizado no decorrer do código.
-    converte_Maiusc(nome);                            // 
+    fgets(nome, sizeof(nome), stdin); // Estas três linhas de código formatam e preparam a string inserida para ser padrão em todo o código,
+    nome[strlen(nome) - 1] = nome[strlen(nome)]; // este padrão é constantemente utilizado no decorrer do código.
+    converte_Maiusc(nome); // 
     // Aqui ele vai chamar a função auxiliar "cadastra_Cid" caso ele encontre no estado no arquivo "database.txt" (que no caso é onde foram armazenados os estados) 
     // o estado inserido.
-    while (fread( & est, sizeof(ESTADO), 1, arquivo) == 1) {   // Aqui iremos ler o arquivo até a última linha.
-      if (strcmp(nome, est.nome_Estado) == 0) {  // Chamando função para cadastrar cidade, caso o strcmp retorne 0.
+    while (fread( & est, sizeof(ESTADO), 1, arquivo) == 1) { // Aqui iremos ler o arquivo até a última linha.
+      if (strcmp(nome, est.nome_Estado) == 0) { // Chamando função para cadastrar cidade, caso o strcmp retorne 0.
+        validacao++;
         cadastra_Cid(nome);
       }
+    }
+
+    if (validacao == 0) {
+      printf("Erro, estado não cadastrado!\n");
     }
     printf("Deseja continuar cadastrando? S\\N ");
     fgets(escolha, sizeof(escolha), stdin);
@@ -297,7 +303,7 @@ void cadastra_Cidade() {
 void cadastra_Cid(char n_estado[]) {
   setlocale(LC_ALL, "Portuguese");
 
-  FILE * arquivo;        
+  FILE * arquivo;
   ESTADO est;
   char escolha[MODWORD];
 
@@ -321,7 +327,7 @@ void cadastra_Cid(char n_estado[]) {
   strcpy(est.nome_Estado, n_Estado);
   converte_Maiusc(est.nome_Estado);
 
-  if (compara_cidade(est.nome_Estado) == 0) {  // Mesmo esquema do que mostrado em cadastra_Estado, função compara_cidade retorna 0, permitido cadastro.
+  if (compara_cidade(est.nome_Estado) == 0) { // Mesmo esquema do que mostrado em cadastra_Estado, função compara_cidade retorna 0, permitido cadastro.
     printf("Cadastro permitido!\n");
     fwrite( & est, sizeof(ESTADO), 1, arquivo);
   }
@@ -443,7 +449,7 @@ void cadastra_Pessoa() {
       // Esta função "gera_id" irá sempre adicionar +1 para cada pessoa cadastrada, auxiliando na função de remover pessoa cadastrada.	
       pes.ID = gera_id();
 
-      fwrite( & pes, sizeof(PESSOA), 1, arquivo);  // Fwrite para gravar no arquivo caso as validações anteriores estejam corretas.
+      fwrite( & pes, sizeof(PESSOA), 1, arquivo); // Fwrite para gravar no arquivo caso as validações anteriores estejam corretas.
       printf("Cadastro realizado com sucesso!\n");
     } else {
       printf("Erro, estado ou cidade não encontrados!\n");
@@ -477,7 +483,8 @@ int gera_id() {
     fclose(fp);
     return 1;
   }
-  fscanf(fp, "%d", &var);
+  fscanf(fp, "%d", &
+    var);
   var ++;
 
   fclose(fp);
@@ -490,7 +497,13 @@ int gera_id() {
 
 // Função auxiliar da função "cadastra_Pessoa", validação de data de nascimento.
 int valida_Data(int dd, int mm, int yy) {
-  if (yy >= 1900 && yy <= 9999) {
+
+  time_t data; // Retornando data atual com a biblioteca time.h.
+  data = time(NULL);
+  struct tm tm = * localtime( & data);
+  int ano_atual = tm.tm_year + 1900;
+
+  if (yy >= 1900 && yy <= ano_atual) {
     if (mm >= 1 && mm <= 12) {
       if ((dd >= 1 && dd <= 31) && (mm == 1 || mm == 3 || mm == 5 || mm == 7 || mm == 8 || mm == 10 || mm == 12))
         return 0;
@@ -545,6 +558,7 @@ void pesquisa_Pessoa() {
   PESSOA pes;
   char escolha[MODWORD];
   char nome[MODWORD];
+  int validacao = 0;
 
   arquivo = fopen("pessoas.txt", "rb");
   if (arquivo == NULL) {
@@ -569,6 +583,7 @@ void pesquisa_Pessoa() {
         printf("----------------------------------------------------------------\n\n");
       }
     }
+
     printf("Deseja pesquisar novamente? S\\N ");
     fgets(escolha, sizeof(escolha), stdin);
     escolha[strlen(escolha) - 1] = escolha[strlen(escolha)];
@@ -588,6 +603,7 @@ void lista_pessoas_estado() {
 
   FILE * arquivo;
   PESSOA pes;
+  int validacao = 0;
 
   char nome[MODWORD];
   char escolha[MODWORD];
@@ -604,10 +620,11 @@ void lista_pessoas_estado() {
     printf("Digite o nome do estado a ser escaneado: ");
     fgets(nome, sizeof(nome), stdin);
     nome[strlen(nome) - 1] = nome[strlen(nome)];
-
     converte_Maiusc(nome);
+
     while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) {
       if (strcmp(nome, pes.estado_Pessoa) == 0) {
+        validacao++;
         printf("Nome: %s\n", pes.nome_Pessoa);
         printf("Sexo: %s\n", pes.sexo_Pessoa);
         printf("Data de nascimento: %d/%d/%d\n", pes.dia, pes.mes, pes.ano);
@@ -616,6 +633,13 @@ void lista_pessoas_estado() {
         printf("----------------------------------------------------------------\n\n");
       }
     }
+    if (validacao == 0) {
+      printf("Estado não encontrado ou não há pessoas cadastradas neste estado! Aperte uma tecla para voltar ao menu...");
+      getchar();
+      fclose(arquivo);
+      main();
+    }
+
     printf("Deseja pesquisar novamente? S\\N ");
     fgets(escolha, sizeof(escolha), stdin);
     escolha[strlen(escolha) - 1] = escolha[strlen(escolha)];
@@ -636,6 +660,7 @@ void lista_pessoas_cidade() {
   FILE * arquivo;
   PESSOA pes;
 
+  int validacao = 0;
   char nome[MODWORD];
   char escolha[MODWORD];
 
@@ -659,7 +684,14 @@ void lista_pessoas_cidade() {
         printf("Estado: %s\n", pes.estado_Pessoa);
         printf("Cidade: %s\n", pes.cidade_Pessoa);
         printf("----------------------------------------------------------------\n\n");
+        validacao++;
       }
+    }
+    if (validacao == 0) {
+      printf("Cidade não encontrada ou não há pessoas cadastradas nesta cidade! Aperte uma tecla para voltar ao menu...");
+      getchar();
+      fclose(arquivo);
+      main();
     }
     printf("Deseja pesquisar novamente? S\\N ");
     fgets(escolha, sizeof(escolha), stdin);
@@ -704,7 +736,7 @@ int busca_nome(char string[], char substring[]) {
   l2 = strlen(substring);
   max = l1 - l2;
 
-  for (i = 0; i <= max; i++) {                         //For responsável por buscar parte de uma string em outra string.
+  for (i = 0; i <= max; i++) { //For responsável por buscar parte de uma string em outra string.
     if (strncmp(string + i, substring, l2) == 0)
       break;
   }
@@ -752,9 +784,26 @@ void remove_pessoa() {
       }
     }
 
-    rewind(arquivo);  // Reabrindo arquivo, pois estarei usando novamente outro fread.
+    if (cont == 0) {
+      printf("Não foi encontrada pessoa alguma com este nome!\n");
+      fclose(arquivo);
+      fclose(alternativo);
+      printf("Deseja tentar outra exclusão? S\\N ");
+      fgets(escolha, sizeof(escolha), stdin);
+      escolha[strlen(escolha) - 1] = escolha[strlen(escolha)];
+      converte_Maiusc(escolha);
+      if ( * escolha == 'S') {
+        fflush(stdin);
+        remove_pessoa();
+      } else {
+        main();
+      }
+    }
 
     if (cont > 1) {
+
+      rewind(arquivo); // Reabrindo arquivo, pois estarei usando novamente outro fread.
+
       while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) {
         if (strcmp(pes.nome_Pessoa, nome) == 0) {
           printf("Nome: %s\n", pes.nome_Pessoa);
@@ -769,7 +818,7 @@ void remove_pessoa() {
       printf("Foram detectados nomes iguais, por favor, digite o ID da pessoa a ser deletada: ");
       scanf("%d", & choice);
       fflush(stdin);
-      rewind(arquivo);  // Reabrindo arquivo, pois estarei usando novamente outro fread.
+      rewind(arquivo); // Reabrindo arquivo, pois estarei usando novamente outro fread.
 
       while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) {
         if (pes.ID != choice) {
@@ -803,6 +852,7 @@ void remove_pessoa() {
       }
 
     }
+
     rewind(arquivo); // Reabrindo arquivo, pois estarei usando novamente outro fread.
 
     while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) {
@@ -858,7 +908,7 @@ void relatorio_demografico() {
 
   cabecalho();
   fflush(stdin);
-  printf("Para obter o relatório demográfico de uma certa região, digite 'S', caso não, aperte Enter: ");
+  printf("Para obter o relatório demográfico de um Estado, digite S.\nPara obter o relatório demográfico nacional, pressione uma tecla: ");
   fgets(escolha, sizeof(escolha), stdin);
   escolha[strlen(escolha) - 1] = escolha[strlen(escolha)];
   converte_Maiusc(escolha);
@@ -870,7 +920,7 @@ void relatorio_demografico() {
   FILE * arquivo;
   PESSOA pes;
 
-  time_t data;       // Retornando data atual com a biblioteca time.h.
+  time_t data; // Retornando data atual com a biblioteca time.h.
   data = time(NULL);
   struct tm tm = * localtime( & data);
   int ano_atual = tm.tm_year + 1900;
@@ -884,7 +934,7 @@ void relatorio_demografico() {
 
   } else {
     cabecalho();
-    while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) {   // Validando dados dos usuários inseridos.
+    while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) { // Validando dados dos usuários inseridos.
       if (ano_atual - pes.ano >= 0 && ano_atual - pes.ano <= 5) {
         zero_cinco++;
       }
@@ -930,14 +980,14 @@ void relatorio_demografico() {
       // Caso sejam encontradas pessoas cadastradas, aqui ele vai mostrar o resultado definitivo do relatório.
     }
     printf("Relatorio demográfico gerado com sucesso!!\n\n");
-    printf("Pessoas com idade entre 0 a 5: %.0f %%\n", (zero_cinco / cont) * 100);
-    printf("Pessoas com idade entre 6 a 10: %.0f %%\n", (seis_dez / cont) * 100);
-    printf("Pessoas com idade entre 11 a 20: %.0f %%\n", (onze_vinte / cont) * 100);
-    printf("Pessoas com idade entre 21 a 40: %.0f %%\n", (vinteum_quaren / cont) * 100);
-    printf("Pessoas com idade entre 41 a 60: %.0f %%\n", (quarum_sess / cont) * 100);
-    printf("Pessoas com idade superior a 60: %.0f %%\n\n", (acimasess / cont) * 100);
-    printf("Pessoas com o sexo 'F': %.0f %%\n", (fem / cont) * 100);
-    printf("Pessoas com o sexo 'M': %.0f %%\n\n", (masc / cont) * 100);
+    printf("Pessoas com idade entre 0 a 5: %.1f %%\n", (zero_cinco / cont) * 100);
+    printf("Pessoas com idade entre 6 a 10: %.1f %%\n", (seis_dez / cont) * 100);
+    printf("Pessoas com idade entre 11 a 20: %.1f %%\n", (onze_vinte / cont) * 100);
+    printf("Pessoas com idade entre 21 a 40: %.1f %%\n", (vinteum_quaren / cont) * 100);
+    printf("Pessoas com idade entre 41 a 60: %.1f %%\n", (quarum_sess / cont) * 100);
+    printf("Pessoas com idade superior a 60: %.1f %%\n\n", (acimasess / cont) * 100);
+    printf("Pessoas com o sexo 'F': %.1f %%\n", (fem / cont) * 100);
+    printf("Pessoas com o sexo 'M': %.1f %%\n\n", (masc / cont) * 100);
     printf("Pressione enter para voltar ao menu!\n");
     getchar();
     fclose(arquivo);
@@ -962,6 +1012,7 @@ void relatorio_demografico_estado() {
   float quarum_sess = 0;
   float acimasess = 0;
 
+  int i = 0;
   char choice;
   float masc, fem;
   int cont;
@@ -1012,7 +1063,16 @@ void relatorio_demografico_estado() {
           fem++;
         }
         cont++;
+        i++;
       }
+    }
+
+    // Caso não seja encontrado o estado, ele mostra a mensagem de erro.
+    if (i == 0) {
+      printf("Estado não encontrado ou não há pessoas cadastradas neste estado! Aperte uma tecla para voltar ao menu...");
+      fclose(arquivo);
+      getchar();
+      main();
     }
     // Caso não sejam encontradas pessoas cadastradas, aqui ele vai mostrar apenas o contador zerado.
     if (cont == 0) {
@@ -1032,14 +1092,14 @@ void relatorio_demografico_estado() {
       // Caso sejam encontradas pessoas cadastradas, aqui ele vai mostrar o resultado definitivo do relatório.
     }
     printf("Relatorio demográfico gerado com sucesso!!\n\n");
-    printf("Pessoas com idade entre 0 a 5: %.0f %%\n", (zero_cinco / cont) * 100);
-    printf("Pessoas com idade entre 6 a 10: %.0f %%\n", (seis_dez / cont) * 100);
-    printf("Pessoas com idade entre 11 a 20: %.0f %%\n", (onze_vinte / cont) * 100);
-    printf("Pessoas com idade entre 21 a 40: %.0f %%\n", (vinteum_quaren / cont) * 100);
-    printf("Pessoas com idade entre 41 a 60: %.0f %%\n", (quarum_sess / cont) * 100);
-    printf("Pessoas com idade superior a 60: %.0f %%\n\n", (acimasess / cont) * 100);
-    printf("Pessoas com o sexo 'F': %.0f %%\n", (fem / cont) * 100);
-    printf("Pessoas com o sexo 'M': %.0f %%\n\n", (masc / cont) * 100);
+    printf("Pessoas com idade entre 0 a 5: %.1f %%\n", (zero_cinco / cont) * 100);
+    printf("Pessoas com idade entre 6 a 10: %.1f %%\n", (seis_dez / cont) * 100);
+    printf("Pessoas com idade entre 11 a 20: %.1f %%\n", (onze_vinte / cont) * 100);
+    printf("Pessoas com idade entre 21 a 40: %.1f %%\n", (vinteum_quaren / cont) * 100);
+    printf("Pessoas com idade entre 41 a 60: %.1f %%\n", (quarum_sess / cont) * 100);
+    printf("Pessoas com idade superior a 60: %.1f %%\n\n", (acimasess / cont) * 100);
+    printf("Pessoas com o sexo 'F': %.1f %%\n", (fem / cont) * 100);
+    printf("Pessoas com o sexo 'M': %.1f %%\n\n", (masc / cont) * 100);
     printf("\nPressione enter para voltar ao menu!\n");
     getchar();
     fclose(arquivo);
