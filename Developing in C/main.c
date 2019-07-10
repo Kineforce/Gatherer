@@ -95,8 +95,9 @@ int main() {
   setlocale(LC_ALL, "Portuguese");
 
   int escolha_Menu;
-  fflush(stdin);
 
+  while(escolha_Menu == 0 || escolha_Menu < 1 || escolha_Menu >9){
+  fflush(stdin);
   system("cls");
 
   printf("-----------------------------------------------------------------------");
@@ -115,47 +116,37 @@ int main() {
   printf("\n---- 7 - Gerar relatório demográfico ----------------------------------");
   printf("\n---- 8 - Excluir Pessoa -----------------------------------------------");
   printf("\n---- 9 - Finalizar Programa -------------------------------------------");
-
   printf("\n-----------------------------------------------------------------------\n");
 
   scanf("%d", & escolha_Menu);
   getchar();
   // Switch para escolher as opções do MENU
 
-  switch (escolha_Menu) {
-  case 1:
-    cadastra_Estado();   // Função para cadastrar estados.
-    break;
-
-  case 2:
+  if(escolha_Menu == 1){
+    cadastra_Estado();   // Função para cadastrar estados. 
+	}  
+  if(escolha_Menu == 2){
     cadastra_Cidade();   // Função para cadastrar cidades.
-    break;
-
-  case 3:
+	}
+  if(escolha_Menu == 3){
     cadastra_Pessoa();   // Função para cadastrar pessoas.
-    break;
-
-  case 4:
+	}
+  if(escolha_Menu == 4){
     lista_pessoas_estado();	 // Função para listar pessoas por estado.
-    break;
-
-  case 5:
+	}
+  if(escolha_Menu == 5){
     lista_pessoas_cidade();  // Função para listar pessoas por cidade.
-    break;
-
-  case 6:
+	}
+  if(escolha_Menu == 6){
     pesquisa_Pessoa();		// Função para listar pessoas por nome ou parte do nome.
-    break;
-
-  case 7:
+    }
+  if(escolha_Menu == 7){
     relatorio_demografico(); 	// Função para gerar o relatório demográfico.
-    break;
-
-  case 8:
+	}
+  if(escolha_Menu == 8){
     remove_pessoa();   // Função para excluir pessoas.
-    break;
-
-  case 9:
+	}	  
+  if(escolha_Menu == 9){
     system("cls");
     printf("-----------------------------------------------------------------------");
     printf("\n-----------------------------------------------------------------------");
@@ -164,10 +155,9 @@ int main() {
     printf("\n-----------------------------------------------------------------------\n\n");
     printf("Go riyo itadaki arigatogozaimasu!");
     exit(0);
-    break;
-
-  default:
-    system("cls");
+	}	  
+}
+  system("cls");
     printf("-----------------------------------------------------------------------");
     printf("\n-----------------------------------------------------------------------");
     printf("\n----Instituto de pesquisa: G A T H E R E R ----------------------------");
@@ -177,8 +167,6 @@ int main() {
     fflush(stdin);
     getchar();
     main();
-    break;
-  }
 }
 
 // Funções do menu
@@ -207,7 +195,7 @@ void cadastra_Estado() {
 
   if (arquivo == NULL) {
     cabecalho();
-    printf("Erro ao abrir o arquivo!\n");
+    printf("Erro! Não há dados inseridos no banco de dados!\nPressione enter para voltar ao menu!\n");
     main();
   }
   cabecalho();
@@ -262,8 +250,9 @@ void cadastra_Cidade() {
   char nome[MODWORD];
 
   if (arquivo == NULL) {
-    printf("Erro ao abrir o arquivo!\n");
-
+  	cabecalho();
+    printf("Erro! Não há dados inseridos no banco de dados!\nPressione enter para voltar ao menu!\n");
+	getchar();
     main();
   } else {
 
@@ -311,7 +300,7 @@ void cadastra_Cid(char n_estado[]) {
   arquivo = fopen("cidade.txt", "ab"); // Abrindo arquivo.
 
   if (arquivo == NULL) {
-    printf("Erro ao abrir o arquivo!\n");
+    printf("Erro! Não há dados inseridos no banco de dados!\nPressione enter para voltar ao menu!\n");
     main();
   }
   cabecalho();
@@ -365,7 +354,6 @@ void cadastra_Pessoa() {
   FILE * arquivo;
   PESSOA pes;
   //"pessoas.txt" é o nosso arquivo para armazenar todas as informações que serão obtidas de cada pessoa, incluindo estado e cidade.
-  arquivo = fopen("pessoas.txt", "ab");
 
   char escolha[MODWORD];
   char city[MODWORD];
@@ -374,7 +362,7 @@ void cadastra_Pessoa() {
 
   if (arquivo == NULL) {
     cabecalho();
-    printf("Erro ao abrir o arquivo!\n");
+    printf("Erro! Não há dados inseridos no banco de dados!\nPressione enter para voltar ao menu!\n");
     main();
   } else {
     cabecalho();
@@ -392,6 +380,7 @@ void cadastra_Pessoa() {
     // A partir daqui, esta função irá realizar comparações e verificações para validação de estado, cidade, sexo e data de nascimento.
     // Caso a função "compara_estcid_Cadastra" retorne 1, os dados de cidade e estado estão válidos.
     if (compara_estcid_Cadastra(estate) == 1) {
+      arquivo = fopen("pessoas.txt", "ab");
       cabecalho();
 
       strcpy(pes.estado_Pessoa, estateorigin);
@@ -449,7 +438,10 @@ void cadastra_Pessoa() {
       fwrite( & pes, sizeof(PESSOA), 1, arquivo); // Fwrite para gravar no arquivo caso as validações anteriores estejam corretas.
       printf("Cadastro realizado com sucesso!\n");
     } else {
-      printf("Erro, estado ou cidade não encontrados!\n");
+      printf("Erro, estado ou cidade não encontrados!\nPressione Enter para voltar ao menu!\n");
+      fflush(stdin);
+      getchar();
+      main();
     }
   }
 
@@ -531,7 +523,8 @@ int compara_estcid_Cadastra(char estcid[]) {
   arquivo = fopen("cidade.txt", "rb");
 
   if (arquivo == NULL) {
-    printf("Erro ao abrir o arquivo!\n");
+    printf("Erro! Não há dados inseridos no banco de dados!\nPressione enter para voltar ao menu!\n");
+    getchar();
     main();
   } else {
     cabecalho();
@@ -560,7 +553,7 @@ void pesquisa_Pessoa() {
   arquivo = fopen("pessoas.txt", "rb");
   if (arquivo == NULL) {
     cabecalho();
-    printf("Erro ao abrir o arquivo!\n");
+    printf("Erro! Não há dados inseridos no banco de dados!\nPressione enter para voltar ao menu!\n");
     getchar();
     main();
 
@@ -614,7 +607,7 @@ void lista_pessoas_estado() {
   arquivo = fopen("pessoas.txt", "rb");
   if (arquivo == NULL) {
     cabecalho();
-    printf("Erro ao abrir o arquivo!\n");
+    printf("Erro! Não há dados inseridos no banco de dados!\nPressione enter para voltar ao menu!\n");
     getchar();
     main();
 
@@ -662,26 +655,36 @@ void lista_pessoas_cidade() {
 
   FILE * arquivo;
   PESSOA pes;
-
+  ESTADO est;
+  int valida = 0;
   int validacao = 0;
   char nome[MODWORD];
   char escolha[MODWORD];
+  char nomest[MODWORD];
+  char nomecid[MODWORD];
 
   arquivo = fopen("pessoas.txt", "rb");
   if (arquivo == NULL) {
     cabecalho();
-    printf("Erro ao abrir o arquivo!\n");
+    printf("Erro! Não há dados inseridos no banco de dados!\nPressione enter para voltar ao menu!\n");
     getchar();
     main();
 
   } else {
     cabecalho();
-    printf("Digite o nome da cidade a ser escaneado: ");
-    fgets(nome, sizeof(nome), stdin);
-    converte_Maiusc(nome);
+    printf("Digite o nome do estado: ");
+    fgets(nomest, sizeof(nomest), stdin);
+    nomest[strlen(nomest) - 1] = nomest[strlen(nomest)];
+    converte_Maiusc(nomest);
+    printf("Digite o nome da cidade: ");
+    fgets(nomecid, sizeof(nomecid), stdin);
+    nomecid[strlen(nomecid) - 1] = nomecid[strlen(nomecid)];
+	converte_Maiusc(nomecid);
+
+
     while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) { // Abrindo arquivo.
-      if (strcmp(nome, pes.cidade_Pessoa) == 0) { // Strcmp para verificar se cidade existe.
-        printf("Nome: %s\n", pes.nome_Pessoa);
+      if (strcmp(nomest, pes.estado_Pessoa) == 0 && strcmp(nomecid, pes.cidade_Pessoa) == 0){ // Strcmp para verificar se cidade existe.
+		printf("Nome: %s\n", pes.nome_Pessoa);
         printf("Sexo: %s\n", pes.sexo_Pessoa);
         printf("Data de nascimento: %d/%d/%d\n", pes.dia, pes.mes, pes.ano);
         printf("Estado: %s\n", pes.estado_Pessoa);
@@ -690,8 +693,10 @@ void lista_pessoas_cidade() {
         validacao++;
       }
     }
+
+    
     if (validacao == 0) {
-      printf("Cidade não encontrada ou não há pessoas cadastradas nesta cidade! Aperte uma tecla para voltar ao menu...");
+      printf("Cidade ou estado não encontrados, ou não há pessoas cadastradas nesta cidade! Aperte uma tecla para voltar ao menu...");
       getchar();
       fclose(arquivo);
       main();
@@ -765,11 +770,10 @@ void remove_pessoa() {
   // ele irá receber todas as pessoas com o nome diferente do inserido, depois o arquivo "pessoas.txt" será deletado
   // e por fim, "alter.txt" será renomeado para "pessoas.txt".
 
-  alternativo = fopen("alter.txt", "a+b");
   arquivo = fopen("pessoas.txt", "r+b");
   if (arquivo == NULL) {
     cabecalho();
-    printf("Erro ao abrir o arquivo!\n");
+    printf("Erro! Não há dados inseridos no banco de dados!\nPressione enter para voltar ao menu!\n");
     getchar();
     main();
 
@@ -779,6 +783,8 @@ void remove_pessoa() {
     fgets(nome, sizeof(nome), stdin);
     nome[strlen(nome) - 1] = nome[strlen(nome)];
     converte_Maiusc(nome);
+
+	alternativo = fopen("alter.txt", "a+b");
 
     while (fread( & pes, sizeof(PESSOA), 1, arquivo) == 1) { // Lendo o arquivo para verificar se existem nomes iguais ou se existe um nome.
       if (strcmp(pes.nome_Pessoa, nome) == 0) {
@@ -931,7 +937,7 @@ void relatorio_demografico() {
   arquivo = fopen("pessoas.txt", "rb");
   if (arquivo == NULL) {
     cabecalho();
-    printf("Erro ao abrir o arquivo!\n");
+    printf("Erro! Não há dados inseridos no banco de dados!\nPressione enter para voltar ao menu!\n");
     getchar();
     main();
 
@@ -1028,7 +1034,7 @@ void relatorio_demografico_estado() {
   arquivo = fopen("pessoas.txt", "rb");
 
   if (arquivo == NULL) {
-    printf("Erro ao abrir o arquivo!");
+    printf("Erro! Não há dados inseridos no banco de dados!\nPressione enter para voltar ao menu!");
     fclose(arquivo);
     getchar();
     main();
@@ -1119,7 +1125,7 @@ int compara_estado(char nome[]) {
 
   if (arquivo == NULL) {
     cabecalho();
-    printf("Erro ao abrir o arquivo!\n");
+    printf("Erro! Não há dados inseridos no banco de dados!\nPressione enter para voltar ao menu!\n");
     main();
   } else {
     while (fread( & est, sizeof(ESTADO), 1, arquivo) == 1) { // Lendo o arquivo e fazendo a comparação.
@@ -1147,7 +1153,7 @@ int compara_cidade(char nome[]) {
 
   if (arquivo == NULL) {
     cabecalho();
-    printf("Erro ao abrir o arquivo!\n");
+    printf("Erro! Não há dados inseridos no banco de dados!\nPressione enter para voltar ao menu!\n");
     main();
   } else {
     while (fread( & est, sizeof(ESTADO), 1, arquivo) == 1) { // Lendo o arquivo e fazendo a comparação.
